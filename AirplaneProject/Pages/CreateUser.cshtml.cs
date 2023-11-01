@@ -26,10 +26,7 @@ namespace AirplaneProject.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            //var contextOptions = new DbContextOptionsBuilder<CustomerDbContext>().Options;
-            using (var context = new CustomerDbContext())
-            {
-                if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
@@ -38,7 +35,6 @@ namespace AirplaneProject.Pages
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
-            }
         }
     }
 }

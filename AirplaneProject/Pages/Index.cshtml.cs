@@ -1,20 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AiplaneProject.Models;
+using AirplaneProject.Authorization;
+using AirplaneProject.Database.DatabaseContextes;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirplaneProject.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : AuthOnPage
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
+        private readonly CustomerDbContext _context;
+        public IndexModel(CustomerDbContext context, AuthorizationInteractor authorizationInteractor) : base(authorizationInteractor)
         {
-            _logger = logger;
+            _context = context;
+        } 
+
+        public IList<CustomerUser>? Customers { get; set; }
+
+        public bool IsAuthorized()
+        {
+            return false;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
+            Customers = await _context.Customer.ToListAsync();
+        }
 
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var contact = await _context.Customer.FindAsync(id);
+
+            if (contact != null)
+            {
+                _context.Customer.Remove(contact);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage();
         }
     }
 }
