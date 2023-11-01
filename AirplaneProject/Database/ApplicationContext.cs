@@ -1,15 +1,19 @@
 ﻿using AiplaneProject.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AirplaneProject
+namespace AirplaneProject.Database
 {
-    public class ApplicationContext : DbContext
+    abstract public class ApplicationContext : DbContext
     {
-        public DbSet<ClientUser> Users { get; set; }
-        public ApplicationContext()
+        public ApplicationContext() : base()
         {
             Database.EnsureCreated();
         }
+        /*
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CustomerUser>().ToTable("CustomerUsers");
+        }*/
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()

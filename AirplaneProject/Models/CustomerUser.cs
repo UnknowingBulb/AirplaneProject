@@ -1,13 +1,13 @@
-﻿namespace AiplaneProject.Database
+﻿namespace AiplaneProject.Models
 {
     /// <summary>
     /// Пользователь клиента
     /// </summary>
-    public class ClientUser : User
+    public class CustomerUser : User
     {
         /// <summary>
         /// Номер телефона
         /// </summary>
-        public string PhoneNumber;
+        public string PhoneNumber { get; set; }
     }
 }
