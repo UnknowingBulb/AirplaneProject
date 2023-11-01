@@ -12,7 +12,11 @@ namespace AirplaneProject
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=airplane-project;Username=admin;Password=admin");
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+            optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSqlConnection"));
         }
     }
 }
