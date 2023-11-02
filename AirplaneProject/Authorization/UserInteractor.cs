@@ -7,10 +7,10 @@ namespace AirplaneProject.Authorization
 {
     public class UserInteractor
     {
-        private readonly UserDbContext _customerDbContext;
-        public UserInteractor(UserDbContext customerDbContext)
+        private readonly UserDbContext _userDbContext;
+        public UserInteractor(UserDbContext userDbContext)
         {
-            _customerDbContext = customerDbContext;
+            _userDbContext = userDbContext;
         }
 
         /// <summary>
@@ -26,24 +26,15 @@ namespace AirplaneProject.Authorization
             if (claims.IsNullOrEmpty())
                 return Result.Fail("Не удалось получить данные из токена");
 
-            var role = claims.FirstOrDefault(c => c.Type == ClaimTypes.UserRole)?.Value;
             var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.UserId)?.Value;
 
             if (userId == null)
                 return Result.Fail("Не удалось получить данные из токена");
 
-            if (role == null || Enum.Parse<RoleTypes>(role) == RoleTypes.Customer)
-            {
-                var userFromDb = _customerDbContext.Users.FirstOrDefault(c => c.Id == Guid.Parse(userId));
-                if (userFromDb == null)
-                    return Result.Fail("Не удалось найти пользователя в БД");
-                return userFromDb;
-            }
-            //TODO: впихнуть сюда сотрудника
-            var userFromDb2 = _customerDbContext.Users.FirstOrDefault(c => c.Id == Guid.Parse(userId));
-            if (userFromDb2 == null)
+            var userFromDb = _userDbContext.Users.FirstOrDefault(c => c.Id == Guid.Parse(userId));
+            if (userFromDb == null)
                 return Result.Fail("Не удалось найти пользователя в БД");
-            return userFromDb2;
+            return userFromDb;
         }
 
         /// <summary>
@@ -59,7 +50,7 @@ namespace AirplaneProject.Authorization
             if (password == string.Empty)
                 return Result.Fail("Пароль пуст, заполните поле");
 
-            var customerUser = _customerDbContext.Users.FirstOrDefault(c => c.Login == login);
+            var customerUser = _userDbContext.Users.FirstOrDefault(c => c.Login == login);
 
             if (customerUser == null || !PasswordHasher.Validate(customerUser.Password, password))
                 return Result.Fail("Неправильное имя пользователя или пароль");
@@ -80,9 +71,10 @@ namespace AirplaneProject.Authorization
             }
             // По хорошему бы разделить эти пароли, но да ладно
             user.Password = PasswordHasher.Hash(user.Password);
+            user.IsEmployee = false;
 
-            _customerDbContext.Users.Add(user);
-            _customerDbContext.SaveChanges();
+            _userDbContext.Users.Add(user);
+            _userDbContext.SaveChanges();
 
             return user;
         }
@@ -109,7 +101,7 @@ namespace AirplaneProject.Authorization
             if (IsPhoneNumberValid(user.PhoneNumber))
                 failResult = Result.Merge(failResult, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
 
-            if (_customerDbContext.Users.Any(c => c.Login == user.Login))
+            if (_userDbContext.Users.Any(c => c.Login == user.Login))
                 failResult = Result.Merge(failResult, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
             return failResult;
