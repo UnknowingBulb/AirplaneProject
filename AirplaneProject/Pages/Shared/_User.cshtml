@@ -10,6 +10,7 @@
         Пароль:
         <input asp-for="@Model.Password" />
         <input type="submit" value="Войти" />
+        <span align="left" style="white-space: pre-line;color:red">@Html.ValidationMessage("LoginError")</span>
     </form>
 }
 else

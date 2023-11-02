@@ -89,13 +89,13 @@ namespace AirplaneProject.Authorization
             if (user == null)
                 return Result.Fail("Данные пусты");
 
-            if (user.Login == string.Empty)
+            if (user.Login.IsNullOrEmpty())
                 failResult = Result.Merge(failResult, Result.Fail("Логин пуст, заполните поле"));
 
-            if (user.Password == string.Empty)
+            if (user.Password.IsNullOrEmpty())
                 failResult = Result.Merge(failResult, Result.Fail("Пароль пуст, заполните поле"));
 
-            if (user.Name == string.Empty)
+            if (user.Name.IsNullOrEmpty())
                 failResult = Result.Merge(failResult, Result.Fail("ФИО пусто, заполните поле"));
 
             if (IsPhoneNumberValid(user.PhoneNumber))
@@ -113,7 +113,7 @@ namespace AirplaneProject.Authorization
         /// <param name="phoneNumber">Номер телефона</param>
         private bool IsPhoneNumberValid(string phoneNumber)
         {
-            return phoneNumber == string.Empty ||
+            return phoneNumber.IsNullOrEmpty() ||
                 !(phoneNumber.StartsWith("+7") && phoneNumber.Length == 12 ||
                 phoneNumber.StartsWith("8") && phoneNumber.Length == 12);
         }

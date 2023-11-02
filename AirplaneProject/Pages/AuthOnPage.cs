@@ -3,6 +3,7 @@ using AiplaneProject.Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AirplaneProject.Pages
 {
@@ -74,6 +75,7 @@ namespace AirplaneProject.Pages
         {
             if (Login.IsNullOrEmpty() || Password.IsNullOrEmpty())
             {
+                ModelState.AddModelError("LoginError", "Заполните поля");
                 return Page();
             }
 
@@ -81,6 +83,7 @@ namespace AirplaneProject.Pages
 
             if (userResult.IsFailed)
             {
+                ModelState.AddModelError("LoginError", userResult.Errors[0].Message);
                 return Page();
             }
 

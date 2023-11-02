@@ -14,4 +14,5 @@
     Номер телефона:
     <input asp-for="User!.PhoneNumber" />
     <input type="submit" value="Подтвердить"/>
+    <span align="left" style="white-space: pre-line;color:red">@Html.ValidationMessage("RegistrationError")</span>
 </form>
