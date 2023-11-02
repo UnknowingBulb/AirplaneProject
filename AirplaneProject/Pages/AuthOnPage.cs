@@ -85,7 +85,9 @@ namespace AirplaneProject.Pages
             }
 
             _activeUser = userResult.Value;
-            _authToken = JwtToken.GenerateToken(_activeUser.Id, RoleTypes.Customer);
+
+            var userRole = _activeUser.IsEmployee ? RoleTypes.Employee : RoleTypes.Customer;
+            _authToken = JwtToken.GenerateToken(_activeUser.Id, userRole);
             Response.Cookies.Append("authToken", _authToken);
 
             return RedirectToPage("./Index");

@@ -3,7 +3,7 @@
     /// <summary>
     /// Пользователь сайта
     /// </summary>
-    public abstract class User
+    public class User
     {
         /// <summary>
         /// Идентификатор пользователя
@@ -21,5 +21,13 @@
         /// Номер телефона
         /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// Номер телефона
+        /// </summary>
+        public string PhoneNumber { get; set; }
+        /// <summary>
+        /// Является ли сотрудником
+        /// </summary>
+        public bool IsEmployee { get; set; }
     }
 }

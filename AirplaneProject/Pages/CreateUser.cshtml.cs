@@ -24,7 +24,7 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public CustomerUser? CustomerUser { get; set; }
+        public User? User { get; set; }
 
         public IActionResult OnPostRegistration()
         {
@@ -33,7 +33,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var userResult = _userInteractor.CreateUser(CustomerUser);
+            var userResult = _userInteractor.CreateUser(User);
 
             if (userResult.IsFailed)
             {

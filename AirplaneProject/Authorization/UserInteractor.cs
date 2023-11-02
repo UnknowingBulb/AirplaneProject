@@ -7,10 +7,10 @@ namespace AirplaneProject.Authorization
 {
     public class UserInteractor
     {
-        private readonly CustomerDbContext _context;
-        public UserInteractor(CustomerDbContext context)
+        private readonly UserDbContext _customerDbContext;
+        public UserInteractor(UserDbContext customerDbContext)
         {
-            _context = context;
+            _customerDbContext = customerDbContext;
         }
 
         /// <summary>
@@ -34,13 +34,13 @@ namespace AirplaneProject.Authorization
 
             if (role == null || Enum.Parse<RoleTypes>(role) == RoleTypes.Customer)
             {
-                var userFromDb = _context.Customer.FirstOrDefault(c => c.Id == Guid.Parse(userId));
+                var userFromDb = _customerDbContext.Users.FirstOrDefault(c => c.Id == Guid.Parse(userId));
                 if (userFromDb == null)
                     return Result.Fail("Не удалось найти пользователя в БД");
                 return userFromDb;
             }
             //TODO: впихнуть сюда сотрудника
-            var userFromDb2 = _context.Customer.FirstOrDefault(c => c.Id == Guid.Parse(userId));
+            var userFromDb2 = _customerDbContext.Users.FirstOrDefault(c => c.Id == Guid.Parse(userId));
             if (userFromDb2 == null)
                 return Result.Fail("Не удалось найти пользователя в БД");
             return userFromDb2;
@@ -59,19 +59,19 @@ namespace AirplaneProject.Authorization
             if (password == string.Empty)
                 return Result.Fail("Пароль пуст, заполните поле");
 
-            var user = _context.Customer.FirstOrDefault(c => c.Login == login);
+            var customerUser = _customerDbContext.Users.FirstOrDefault(c => c.Login == login);
 
-            if (user == null || !PasswordHasher.Validate(user.Password, password))
+            if (customerUser == null || !PasswordHasher.Validate(customerUser.Password, password))
                 return Result.Fail("Неправильное имя пользователя или пароль");
 
-            return user;
+            return customerUser;
         }
 
         /// <summary>
         /// Создать пользователя в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public Result<User> CreateUser(CustomerUser user)
+        public Result<User> CreateUser(User user)
         {
             var validationResult = IsUserValidForRegistration(user);
             if (validationResult.IsFailed)
@@ -81,8 +81,8 @@ namespace AirplaneProject.Authorization
             // По хорошему бы разделить эти пароли, но да ладно
             user.Password = PasswordHasher.Hash(user.Password);
 
-            _context.Customer.Add(user);
-            _context.SaveChanges();
+            _customerDbContext.Users.Add(user);
+            _customerDbContext.SaveChanges();
 
             return user;
         }
@@ -91,7 +91,7 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public Result IsUserValidForRegistration(CustomerUser user)
+        public Result IsUserValidForRegistration(User user)
         {
             var failResult = Result.Ok();
             if (user == null)
@@ -109,7 +109,7 @@ namespace AirplaneProject.Authorization
             if (IsPhoneNumberValid(user.PhoneNumber))
                 failResult = Result.Merge(failResult, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
 
-            if (_context.Customer.Any(c => c.Login == user.Login))
+            if (_customerDbContext.Users.Any(c => c.Login == user.Login))
                 failResult = Result.Merge(failResult, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
             return failResult;
