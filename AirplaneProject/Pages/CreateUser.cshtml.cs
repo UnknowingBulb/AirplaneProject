@@ -2,18 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using AirplaneProject.Database.DatabaseContextes;
-using AiplaneProject.Models;
+using AiplaneProject.Objects;
 using Microsoft.EntityFrameworkCore;
+using AirplaneProject.Interactors;
 
 namespace AirplaneProject.Pages
 {
-    public class CreateModel : PageModel
+    public class CreateModel : AuthOnPage
     {
-        private readonly CustomerDbContext _context;
+        private readonly UserInteractor _userInteractor;
 
-        public CreateModel(CustomerDbContext context)
+        public CreateModel(UserInteractor userInteractor) : base(userInteractor)
         {
-            _context = context;
+            _userInteractor = userInteractor;
         }
 
         public IActionResult OnGet()
@@ -31,8 +32,12 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            if (CustomerUser != null) _context.Customer.Add(CustomerUser);
-            await _context.SaveChangesAsync();
+            var userResult = _userInteractor.CreateUser(CustomerUser);
+
+            if (userResult.IsFailed)
+            {
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

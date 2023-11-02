@@ -1,4 +1,4 @@
-﻿namespace AiplaneProject.Models
+﻿namespace AiplaneProject.Objects
 {
     /// <summary>
     /// Заказ

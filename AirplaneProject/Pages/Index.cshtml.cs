@@ -1,6 +1,6 @@
-﻿using AiplaneProject.Models;
-using AirplaneProject.Authorization;
+﻿using AiplaneProject.Objects;
 using AirplaneProject.Database.DatabaseContextes;
+using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ namespace AirplaneProject.Pages
     public class IndexModel : AuthOnPage
     {
         private readonly CustomerDbContext _context;
-        public IndexModel(CustomerDbContext context, AuthorizationInteractor authorizationInteractor) : base(authorizationInteractor)
+        public IndexModel(CustomerDbContext context, UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
             _context = context;
         } 

@@ -9,6 +9,6 @@ namespace AirplaneProject.Database.DatabaseContextes
         {
         }
 
-        public DbSet<AiplaneProject.Models.CustomerUser> Customer => Set<AiplaneProject.Models.CustomerUser>();
+        public DbSet<AiplaneProject.Objects.CustomerUser> Customer => Set<AiplaneProject.Objects.CustomerUser>();
     }
 }

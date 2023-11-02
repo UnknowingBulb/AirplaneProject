@@ -2,14 +2,16 @@
 @model AirplaneProject.Pages.CreateModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<p>Enter a customer name:</p>
+<p>Заполните данные:</p>
 
 <form method="post">
-    Номер телефона:
-    <input asp-for="CustomerUser!.PhoneNumber" />
-    Пароль:
-    <input asp-for="CustomerUser!.Password" />
+    Логин:
+    <input asp-for="CustomerUser!.Login" />
     Фамилия Имя Отчество:
     <input asp-for="CustomerUser!.Name" />
-    <input type="submit" />
+    Пароль:
+    <input asp-for="CustomerUser!.Password" />
+    Номер телефона:
+    <input asp-for="CustomerUser!.PhoneNumber" />
+    <input type="submit" value="Подтвердить"/>
 </form>

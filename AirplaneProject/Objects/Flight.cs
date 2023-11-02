@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace AiplaneProject.Models
+﻿namespace AiplaneProject.Objects
 {
     /// <summary>
     /// Рейс

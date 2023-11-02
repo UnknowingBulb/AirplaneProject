@@ -1,7 +1,8 @@
-using AiplaneProject.Models;
+using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DatabaseContextes;
+using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<CustomerDbContext>();
-builder.Services.AddScoped<AuthorizationInteractor>();
+builder.Services.AddScoped<UserInteractor>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

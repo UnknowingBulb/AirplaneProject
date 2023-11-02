@@ -1,21 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using AiplaneProject.Models;
-using AirplaneProject.Authorization;
+using AiplaneProject.Objects;
+using AirplaneProject.Interactors;
+using FluentResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AirplaneProject.Pages
 {
     public abstract class AuthOnPage : PageModel
     {
-        private readonly AuthorizationInteractor _authorizationInteractor;
+        private readonly UserInteractor _userInteractor;
         private readonly string? _authToken;
         private User? _activeUser;
 
-        public AuthOnPage(AuthorizationInteractor authorizationInteractor)
+        public AuthOnPage(UserInteractor userInteractor)
         {
-            _authorizationInteractor = authorizationInteractor;
+            _userInteractor = userInteractor;
             _authToken = this.Request?.Headers?.Authorization;
         }
 
+        [BindProperty]
+        public string? Login { get; set; }
+        [BindProperty]
+        public string? Password { get; set; }
+
+        /// <summary>
+        /// Пользователь авторизован
+        /// </summary>
         public bool IsAuthorized
         {
             get
@@ -24,6 +34,9 @@ namespace AirplaneProject.Pages
             }
         }
 
+        /// <summary>
+        /// Получить ФИО текущего пользователя
+        /// </summary>
         public string? ActiveUserName
         {
             get
@@ -32,13 +45,19 @@ namespace AirplaneProject.Pages
             }
         }
 
+        /// <summary>
+        /// Текущий пользователь
+        /// </summary>
         public User? ActiveUser
         {
             get
             {
                 if (_activeUser == null)
                 {
-                    _activeUser = _authorizationInteractor.GetUser(_authToken);
+                    var userResult = _userInteractor.GetUser(_authToken);
+                    if (userResult.IsSuccess) {
+                        _activeUser = userResult.Value;
+                    }
                 }
                 return _activeUser;
             }

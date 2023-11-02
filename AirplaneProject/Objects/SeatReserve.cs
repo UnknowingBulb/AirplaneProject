@@ -1,4 +1,4 @@
-﻿namespace AiplaneProject.Models
+﻿namespace AiplaneProject.Objects
 {
     /// <summary>
     /// Информация по резерву места на рейс
