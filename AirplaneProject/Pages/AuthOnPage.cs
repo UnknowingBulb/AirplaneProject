@@ -1,21 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using AiplaneProject.Objects;
-using AirplaneProject.Interactors;
-using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using AirplaneProject.Authorization;
 
 namespace AirplaneProject.Pages
 {
     public abstract class AuthOnPage : PageModel
     {
         private readonly UserInteractor _userInteractor;
-        private readonly string? _authToken;
+        private string? _authToken;
         private User? _activeUser;
 
         public AuthOnPage(UserInteractor userInteractor)
         {
             _userInteractor = userInteractor;
-            _authToken = this.Request?.Headers?.Authorization;
         }
 
         [BindProperty]
@@ -52,15 +51,56 @@ namespace AirplaneProject.Pages
         {
             get
             {
+                if (_authToken == null)
+                {
+                    _authToken = Request?.Headers.Authorization.ToString().Replace("Bearer ", "");
+                }
                 if (_activeUser == null)
                 {
                     var userResult = _userInteractor.GetUser(_authToken);
-                    if (userResult.IsSuccess) {
+                    if (userResult.IsSuccess)
+                    {
                         _activeUser = userResult.Value;
                     }
                 }
                 return _activeUser;
             }
+        }
+
+        /// <summary>
+        /// Логин
+        /// </summary>
+        public async Task<IActionResult> OnPostLogin()
+        {
+            if (Login.IsNullOrEmpty() || Password.IsNullOrEmpty())
+            {
+                return Page();
+            }
+
+            var userResult = _userInteractor.GetUser(Login, Password);
+
+            if (userResult.IsFailed)
+            {
+                return Page();
+            }
+
+            _activeUser = userResult.Value;
+            _authToken = JwtToken.GenerateToken(_activeUser.Id, RoleTypes.Customer);
+            Response.Cookies.Append("authToken", _authToken);
+
+            return RedirectToPage("./Index");
+        }
+
+        /// <summary>
+        /// Разлогин
+        /// </summary>
+        public async Task<IActionResult> OnPostLogout()
+        {
+            Response.Cookies.Delete("authToken");
+            _authToken = null;
+            _activeUser = null;
+
+            return RedirectToPage("./Index");
         }
     }
 }

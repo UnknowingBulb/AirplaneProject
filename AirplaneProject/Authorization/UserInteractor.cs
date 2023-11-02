@@ -1,14 +1,9 @@
 ﻿using AiplaneProject.Objects;
-using AirplaneProject.Authorization;
 using AirplaneProject.Database.DatabaseContextes;
 using FluentResults;
-using Microsoft.CodeAnalysis.Scripting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
-using System.Text;
 
-namespace AirplaneProject.Interactors
+namespace AirplaneProject.Authorization
 {
     public class UserInteractor
     {
@@ -17,6 +12,11 @@ namespace AirplaneProject.Interactors
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Получить пользователя по токену авторизации
+        /// </summary>
+        /// <param name="authToken">Токен</param>
         public Result<User> GetUser(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
@@ -24,12 +24,13 @@ namespace AirplaneProject.Interactors
 
             var claims = JwtToken.ExtractClaims(authToken);
             if (claims.IsNullOrEmpty())
-                return Result.Fail("Не удалось данные из токена");
+                return Result.Fail("Не удалось получить данные из токена");
 
             var role = claims.FirstOrDefault(c => c.Type == ClaimTypes.UserRole)?.Value;
             var userId = claims.FirstOrDefault(c => c.Type == ClaimTypes.UserId)?.Value;
 
-            if (userId == null) return null;
+            if (userId == null)
+                return Result.Fail("Не удалось получить данные из токена");
 
             if (role == null || Enum.Parse<RoleTypes>(role) == RoleTypes.Customer)
             {
@@ -45,6 +46,11 @@ namespace AirplaneProject.Interactors
             return userFromDb2;
         }
 
+        /// <summary>
+        /// Получить пользователя по логину/паролю
+        /// </summary>
+        /// <param name="login">Логин</param>
+        /// <param name="password">Пароль</param>
         public Result<User> GetUser(string login, string password)
         {
             if (login == string.Empty)
@@ -55,7 +61,7 @@ namespace AirplaneProject.Interactors
 
             var user = _context.Customer.FirstOrDefault(c => c.Login == login);
 
-            if (user == null || !VerifyPassword(HashPasword(password), user.Password))
+            if (user == null || !PasswordHasher.Validate(user.Password, password))
                 return Result.Fail("Неправильное имя пользователя или пароль");
 
             return user;
@@ -73,7 +79,7 @@ namespace AirplaneProject.Interactors
                 return validationResult;
             }
             // По хорошему бы разделить эти пароли, но да ладно
-            user.Password = HashPasword(user.Password);
+            user.Password = PasswordHasher.Hash(user.Password);
 
             _context.Customer.Add(user);
             _context.SaveChanges();
@@ -110,44 +116,14 @@ namespace AirplaneProject.Interactors
         }
 
         /// <summary>
-        /// Хэширование пароля
-        /// </summary>
-        /// <param name="password">Пароль</param>
-        private string HashPasword(string password)
-        {
-            var keySize = 64;
-            var iterations = 350000;
-            var hashAlgorithm = HashAlgorithmName.SHA512;
-
-            var salt = RandomNumberGenerator.GetBytes(keySize);
-            var hash = Rfc2898DeriveBytes.Pbkdf2(
-                Encoding.UTF8.GetBytes(password),
-            salt,
-            iterations,
-                hashAlgorithm,
-                keySize);
-            return Convert.ToHexString(hash);
-        }
-
-        /// <summary>
-        /// Верификация пароля
-        /// </summary>
-        /// <param name="hashToCompare">Хэш текущего пароля</param>
-        /// <param name="hash">Хэш из БД</param>
-        private bool VerifyPassword(string hashToCompare, string hash)
-        {
-            return CryptographicOperations.FixedTimeEquals(Convert.FromHexString(hashToCompare), Convert.FromHexString(hash));
-        }
-
-        /// <summary>
         /// Валидация корректности номера телефона
         /// </summary>
         /// <param name="phoneNumber">Номер телефона</param>
         private bool IsPhoneNumberValid(string phoneNumber)
         {
             return phoneNumber == string.Empty ||
-                !((phoneNumber.StartsWith("+7") && phoneNumber.Length == 12) ||
-                (phoneNumber.StartsWith("8") && phoneNumber.Length == 12));
+                !(phoneNumber.StartsWith("+7") && phoneNumber.Length == 12 ||
+                phoneNumber.StartsWith("8") && phoneNumber.Length == 12);
         }
     }
 }

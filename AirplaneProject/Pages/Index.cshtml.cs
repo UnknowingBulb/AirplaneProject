@@ -1,6 +1,7 @@
 ﻿using AiplaneProject.Objects;
+using AirplaneProject.Authorization;
 using AirplaneProject.Database.DatabaseContextes;
-using AirplaneProject.Interactors;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,6 @@ namespace AirplaneProject.Pages
         } 
 
         public IList<CustomerUser>? Customers { get; set; }
-
-        public bool IsAuthorized()
-        {
-            return false;
-        }
 
         public async Task OnGetAsync()
         {

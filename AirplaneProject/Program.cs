@@ -2,9 +2,9 @@ using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DatabaseContextes;
-using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<CustomerDbContext>();
 builder.Services.AddScoped<UserInteractor>();
+//TODO: проверить что тут нужно
+//builder.Services.AddDefaultIdentity<SignInManager>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -24,6 +26,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+
+// Верю, что это мб и плохо, но от разбора авторизации меня уже мутит
+app.Use(async (context, next) =>
+{
+    var JWToken = context.Request.Cookies.FirstOrDefault(c => c.Key == "authToken").Value;
+    if (!string.IsNullOrEmpty(JWToken))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+    }
+    await next();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

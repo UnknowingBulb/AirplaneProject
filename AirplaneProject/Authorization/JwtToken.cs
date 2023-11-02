@@ -2,12 +2,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 
 namespace AirplaneProject.Authorization
 {
     public class JwtToken
     {
+        /// <summary>
+        /// Параметры валидации токена
+        /// </summary>
         public static TokenValidationParameters TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -19,6 +21,11 @@ namespace AirplaneProject.Authorization
             ValidateIssuerSigningKey = true,
         };
 
+        /// <summary>
+        /// Создать токен
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="role">Роль</param>
         public static string GenerateToken(Guid userId, RoleTypes role)
         {
             var securityKey = TokenValidationParameters.IssuerSigningKey;
@@ -39,6 +46,10 @@ namespace AirplaneProject.Authorization
             return handler.WriteToken(secToken);
         }
 
+        /// <summary>
+        /// Валидация токена
+        /// </summary>
+        /// <param name="authToken">Токен</param>
         public static bool ValidateToken(string? authToken)
         {
             if (authToken == null || authToken == string.Empty)
@@ -59,6 +70,10 @@ namespace AirplaneProject.Authorization
             return true;
         }
 
+        /// <summary>
+        /// Получить Claims из токена
+        /// </summary>
+        /// <param name="authToken"><Токен/param>
         public static IEnumerable<Claim> ExtractClaims(string? authToken)
         {
             if (!ValidateToken(authToken))

@@ -1,0 +1,21 @@
+﻿@model AirplaneProject.Pages.AuthOnPage
+
+@if (!Model.IsAuthorized)
+{
+    <a asp-page="CreateUser">Зарегистрироваться</a>
+
+    <form method="post" asp-page-handler="Login">
+        Логин:
+        <input asp-for="@Model.Login" />
+        Пароль:
+        <input asp-for="@Model.Password" />
+        <input type="submit" value="Войти" />
+    </form>
+}
+else
+{
+    <p>@Model.ActiveUserName</p>
+    <form method="post" asp-page-handler="Logout">
+        <input type="submit" value="Выйти" />
+    </form>
+}

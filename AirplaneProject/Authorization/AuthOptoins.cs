@@ -1,8 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 
 namespace AirplaneProject.Authorization

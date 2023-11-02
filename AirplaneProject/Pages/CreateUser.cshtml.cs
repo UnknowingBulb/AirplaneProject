@@ -4,7 +4,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using AirplaneProject.Database.DatabaseContextes;
 using AiplaneProject.Objects;
 using Microsoft.EntityFrameworkCore;
-using AirplaneProject.Interactors;
+using Microsoft.AspNetCore.Identity;
+using AirplaneProject.Authorization;
 
 namespace AirplaneProject.Pages
 {
@@ -25,7 +26,7 @@ namespace AirplaneProject.Pages
         [BindProperty]
         public CustomerUser? CustomerUser { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPostRegistration()
         {
             if (!ModelState.IsValid)
             {
