@@ -33,5 +33,34 @@
             }
         </tbody>
     </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Время отправления (UTC)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Flights != null)
+            {
+                foreach (var contact in Model.Flights)
+                {
+                    <tr>
+                        <td> @contact.Id </td>
+                        <td>@contact.DepartureDateTime</td>
+                        <td>
+                            <!-- <snippet_Edit> -->
+                            <a asp-page="./Edit" asp-route-id="@contact.Id">Edit</a> |
+                            <!-- </snippet_Edit> -->
+                            <!-- <snippet_Delete> -->
+                            <button type="submit" asp-page-handler="delete" asp-route-id="@contact.Id">delete</button>
+                            <!-- </snippet_Delete> -->
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
     <a asp-page="Create">Create New</a>
 </form>

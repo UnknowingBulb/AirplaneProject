@@ -2,6 +2,7 @@ using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DatabaseContextes;
+using AirplaneProject.Interacotrs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
@@ -15,9 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<UserDbContext>();
 builder.Services.AddDbContext<OrderDbContext>();
+builder.Services.AddDbContext<FlightDbContext>();
 builder.Services.AddScoped<UserInteractor>();
-//TODO: проверить что тут нужно
-//builder.Services.AddDefaultIdentity<SignInManager>();
+builder.Services.AddScoped<FlightInteractor>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

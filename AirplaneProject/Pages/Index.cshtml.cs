@@ -1,31 +1,29 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Database.DatabaseContextes;
-using Microsoft.AspNetCore.Identity;
+using AirplaneProject.Interacotrs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirplaneProject.Pages
 {
     public class IndexModel : AuthOnPage
     {
         private readonly UserDbContext _userDbContext;
-        private readonly OrderDbContext _orderDbContext;
-        public IndexModel(UserDbContext userDbContext, OrderDbContext orderDbContext, UserInteractor authorizationInteractor) : base(authorizationInteractor)
+        private readonly FlightInteractor _flightInteractor;
+        public IndexModel(UserDbContext userDbContext, FlightInteractor flightInteractor, UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
             _userDbContext = userDbContext;
-            _orderDbContext = orderDbContext;
+            _flightInteractor = flightInteractor;
         } 
 
         public IList<User>? Users { get; set; }
+        public IList<Flight>? Flights { get; set; }
 
         public async Task OnGetAsync()
         {
             Users = await _userDbContext.User.ToListAsync();
-            var k = await _orderDbContext.Order.Include(x => x.SeatReserves).ToListAsync();
-            var b = k[0].SeatReserves;
+            Flights = _flightInteractor.GetUpcomingFlights().ToList();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
