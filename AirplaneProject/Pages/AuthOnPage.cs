@@ -19,9 +19,9 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public string? Login { get; set; }
+        public string? AuthLogin { get; set; }
         [BindProperty]
-        public string? Password { get; set; }
+        public string? AuthPassword { get; set; }
 
         /// <summary>
         /// Пользователь авторизован
@@ -73,13 +73,13 @@ namespace AirplaneProject.Pages
         /// </summary>
         public async Task<IActionResult> OnPostLogin()
         {
-            if (Login.IsNullOrEmpty() || Password.IsNullOrEmpty())
+            if (AuthLogin.IsNullOrEmpty() || AuthPassword.IsNullOrEmpty())
             {
                 ModelState.AddModelError("LoginError", "Заполните поля");
                 return Page();
             }
 
-            var userResult = _userInteractor.GetUser(Login, Password);
+            var userResult = _userInteractor.GetUser(AuthLogin, AuthPassword);
 
             if (userResult.IsFailed)
             {
