@@ -11,27 +11,31 @@ namespace AirplaneProject.Pages
 {
     public class IndexModel : AuthOnPage
     {
-        private readonly UserDbContext _context;
-        public IndexModel(UserDbContext context, UserInteractor authorizationInteractor) : base(authorizationInteractor)
+        private readonly UserDbContext _userDbContext;
+        private readonly OrderDbContext _orderDbContext;
+        public IndexModel(UserDbContext userDbContext, OrderDbContext orderDbContext, UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
-            _context = context;
+            _userDbContext = userDbContext;
+            _orderDbContext = orderDbContext;
         } 
 
         public IList<User>? Users { get; set; }
 
         public async Task OnGetAsync()
         {
-            Users = await _context.Users.ToListAsync();
+            Users = await _userDbContext.User.ToListAsync();
+            var k = await _orderDbContext.Order.Include(x => x.SeatReserves).ToListAsync();
+            var b = k[0].SeatReserves;
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var contact = await _context.Users.FindAsync(id);
+            var contact = await _userDbContext.User.FindAsync(id);
 
             if (contact != null)
             {
-                _context.Users.Remove(contact);
-                await _context.SaveChangesAsync();
+                _userDbContext.User.Remove(contact);
+                await _userDbContext.SaveChangesAsync();
             }
 
             return RedirectToPage();

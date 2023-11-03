@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database.DatabaseContextes
 {
-    public class UserDbContext : ApplicationContext
+    public class SeatReserveDbContext : ApplicationContext
     {
-        public UserDbContext()
+        public SeatReserveDbContext()
             : base()
         {
         }
 
-        public DbSet<User> User => Set<User>();
+        public DbSet<SeatReserve> SeatReserve => Set<SeatReserve>();
     }
 }

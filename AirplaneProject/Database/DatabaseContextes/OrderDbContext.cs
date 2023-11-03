@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database.DatabaseContextes
 {
-    public class UserDbContext : ApplicationContext
+    public class OrderDbContext : ApplicationContext
     {
-        public UserDbContext()
+        public OrderDbContext()
             : base()
         {
         }
 
-        public DbSet<User> User => Set<User>();
+        public DbSet<Order> Order => Set<Order>();
     }
 }

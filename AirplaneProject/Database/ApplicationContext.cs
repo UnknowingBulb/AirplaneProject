@@ -7,13 +7,9 @@ namespace AirplaneProject.Database
     {
         public ApplicationContext() : base()
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
-        /*
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<CustomerUser>().ToTable("CustomerUsers");
-        }*/
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()

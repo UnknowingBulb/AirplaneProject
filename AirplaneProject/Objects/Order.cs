@@ -8,18 +8,22 @@
         /// <summary>
         /// Идентификатор заказа
         /// </summary>
-        public Guid Guid;
+        public Guid Id { get; set; }
         /// <summary>
         /// Идентификатор рейса
         /// </summary>
-        public Guid FligthId;
+        public Guid FlightId { get; set; }
         /// <summary>
         /// Идентификатор клиента, оформившего заказ
         /// </summary>
-        public Guid ClientId;
+        public Guid UserId { get; set; }
+        /// <summary>
+        /// Пользователь-автор заказа
+        /// </summary>
+        public User User { get; set; }
         /// <summary>
         /// Информация о резерве мест в заказе
         /// </summary>
-        public List<SeatReserve> SeatReserveInfo;
+        public List<SeatReserve> SeatReserves { get; set; } = new();
     }
 }

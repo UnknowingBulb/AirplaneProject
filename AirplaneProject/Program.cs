@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<UserDbContext>();
+builder.Services.AddDbContext<OrderDbContext>();
 builder.Services.AddScoped<UserInteractor>();
 //TODO: проверить что тут нужно
 //builder.Services.AddDefaultIdentity<SignInManager>();

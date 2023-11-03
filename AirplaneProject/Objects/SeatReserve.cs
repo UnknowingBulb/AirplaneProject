@@ -8,18 +8,22 @@
         /// <summary>
         /// Идентификатор резерва
         /// </summary>
-        public Guid Guid;
+        public Guid Id { get; set; }
         /// <summary>
         /// Идентификатор заказа, в котором действует резерв
         /// </summary>
-        public Guid OrderGuid;
+        public Guid OrderId { get; set; }
         /// <summary>
         /// Идентификатор пассажира
         /// </summary>
-        public Guid PassengerGuid;
+        public Guid PassengerId { get; set; }
+        /// <summary>
+        /// Инфо о пассажире
+        /// </summary>
+        public Passenger Passenger { get; set; }
         /// <summary>
         /// Номер занятого места
         /// </summary>
-        public int SeatNumber;
+        public int SeatNumber { get; set; }
     }
 }
