@@ -20,3 +20,56 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.row-columns {
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+}
+
+.login-row-columns {
+    display: flex;
+    flex-direction: row;
+    margin: 1px;
+}
+
+.column-names {
+    width: 30%;
+    text-align: left;
+}
+
+.column-inputs {
+    width: 70%;
+    text-align: left;
+}
+
+.error-text {
+    font-size: 12px;
+    white-space: pre-line;
+    color: red
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-text {
+    font-size: 14px;
+}
+
+.login-input {
+    line-height: 16px;
+    font-size: 14px;
+}
+
+.login-btn {
+    font-size: 14px;
+    line-height: 18px;
+    margin:1px;
+}
+
+.sing-up-link {
+    text-align: center;
+    margin: 3px;
+}

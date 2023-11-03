@@ -2,17 +2,29 @@
 @model AirplaneProject.Pages.CreateModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<p>Заполните данные:</p>
+<h3>Заполните данные:</h3>
 
 <form method="post" asp-page-handler="Registration">
-    Логин:
-    <input asp-for="User!.Login" />
-    Фамилия Имя Отчество:
-    <input asp-for="User!.Name" />
-    Пароль:
-    <input asp-for="User!.Password" />
-    Номер телефона:
-    <input asp-for="User!.PhoneNumber" />
-    <input type="submit" value="Подтвердить"/>
-    <span align="left" style="white-space: pre-line;color:red">@Html.ValidationMessage("RegistrationError")</span>
+
+    <div class="row-columns">
+        <div class="column-names">Логин:</div>
+        <input class="column-inputs" asp-for="User!.Login" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Пароль:</div>
+        <input class="column-inputs" asp-for="User!.Password" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Фамилия Имя Отчество:</div>
+        <input class="column-inputs" asp-for="User!.Name" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Номер телефона:</div>
+        <input class="column-inputs" asp-for="User!.PhoneNumber" />
+    </div>
+    <input type="submit" value="Подтвердить" />
 </form>
+<span align="left" class="error-text">@Html.ValidationMessage("RegistrationError")</span>

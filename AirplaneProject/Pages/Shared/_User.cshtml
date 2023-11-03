@@ -2,21 +2,32 @@
 
 @if (!Model.IsAuthorized)
 {
-    <a asp-page="CreateUser">Зарегистрироваться</a>
-
-    <form method="post" asp-page-handler="Login">
-        Логин:
-        <input asp-for="@Model.Login" />
-        Пароль:
-        <input asp-for="@Model.Password" />
-        <input type="submit" value="Войти" />
-        <span align="left" style="white-space: pre-line;color:red">@Html.ValidationMessage("LoginError")</span>
-    </form>
+    <div class="column">
+        <form method="post" class="login-row-columns" asp-page-handler="Login">
+            <div class="column">
+                <div class="login-row-columns">
+                    <div class="column-names login-text">Логин:</div>
+                    <input class="column-inputs login-input" asp-for="@Model.Login" />
+                </div>
+                <div class="login-row-columns">
+                    <div class="column-names login-text">Пароль:</div>
+                    <input class="column-inputs login-input" asp-for="@Model.Password" />
+                </div>
+            </div>
+            <div class="column">
+                <input type="submit" class="login-btn" value="Войти" />
+                <a class="login-text sing-up-link" asp-page="CreateUser">Зарегистрироваться</a>
+            </div>
+        </form>
+        <span align="left" class="error-text">@Html.ValidationMessage("LoginError")</span>
+    </div>
 }
 else
 {
-    <p>@Model.ActiveUserName</p>
-    <form method="post" asp-page-handler="Logout">
-        <input type="submit" value="Выйти" />
-    </form>
+    <div class="column">
+        <div class="login-text">@Model.ActiveUserName</div>
+        <form method="post" asp-page-handler="Logout">
+            <input type="submit" class="login-btn" value="Выйти" />
+        </form>
+    </div>
 }
