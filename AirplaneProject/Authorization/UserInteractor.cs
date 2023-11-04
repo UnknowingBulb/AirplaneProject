@@ -1,6 +1,7 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Database.DatabaseContextes;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AirplaneProject.Authorization
@@ -17,7 +18,7 @@ namespace AirplaneProject.Authorization
         /// Получить пользователя по токену авторизации
         /// </summary>
         /// <param name="authToken">Токен</param>
-        public Result<User> GetUser(string? authToken)
+        public async Task<Result<User>> GetUser(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
                 return Result.Fail("Не удалось получить пользователя");
@@ -31,7 +32,7 @@ namespace AirplaneProject.Authorization
             if (userId == null)
                 return Result.Fail("Не удалось получить данные из токена");
 
-            var userFromDb = _userDbContext.User.FirstOrDefault(c => c.Id == Guid.Parse(userId));
+            var userFromDb = await _userDbContext.User.FirstOrDefaultAsync(c => c.Id == Guid.Parse(userId));
             if (userFromDb == null)
                 return Result.Fail("Не удалось найти пользователя в БД");
             return userFromDb;
@@ -42,7 +43,7 @@ namespace AirplaneProject.Authorization
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        public Result<User> GetUser(string login, string password)
+        public async Task<Result<User>> GetUser(string login, string password)
         {
             if (login == string.Empty)
                 return Result.Fail("Логин пуст, заполните поле");
@@ -50,7 +51,7 @@ namespace AirplaneProject.Authorization
             if (password == string.Empty)
                 return Result.Fail("Пароль пуст, заполните поле");
 
-            var customerUser = _userDbContext.User.FirstOrDefault(c => c.Login == login);
+            var customerUser = await _userDbContext.User.FirstOrDefaultAsync(c => c.Login == login);
 
             if (customerUser == null || !PasswordHasher.Validate(customerUser.Password, password))
                 return Result.Fail("Неправильное имя пользователя или пароль");
@@ -62,9 +63,9 @@ namespace AirplaneProject.Authorization
         /// Создать пользователя в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public Result<User> CreateUser(User user)
+        public async Task<Result<User>> CreateUser(User user)
         {
-            var validationResult = IsUserValidForRegistration(user);
+            var validationResult = await IsUserValidForRegistration(user);
             if (validationResult.IsFailed)
             {
                 return validationResult;
@@ -74,7 +75,7 @@ namespace AirplaneProject.Authorization
             user.IsEmployee = false;
 
             _userDbContext.User.Add(user);
-            _userDbContext.SaveChanges();
+            await _userDbContext.SaveChangesAsync();
 
             return user;
         }
@@ -83,7 +84,7 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public Result IsUserValidForRegistration(User user)
+        public async Task<Result> IsUserValidForRegistration(User user)
         {
             var failResult = Result.Ok();
             if (user == null)
@@ -101,7 +102,7 @@ namespace AirplaneProject.Authorization
             if (IsPhoneNumberValid(user.PhoneNumber))
                 failResult = Result.Merge(failResult, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
 
-            if (_userDbContext.User.Any(c => c.Login == user.Login))
+            if (await _userDbContext.User.AnyAsync(c => c.Login == user.Login))
                 failResult = Result.Merge(failResult, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
             return failResult;

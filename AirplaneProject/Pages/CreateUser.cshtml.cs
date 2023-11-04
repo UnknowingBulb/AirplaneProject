@@ -27,9 +27,9 @@ namespace AirplaneProject.Pages
         /// Регистрация
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnPostRegistration()
+        public async Task<IActionResult> OnPostRegistration()
         {
-            var userResult = _userInteractor.CreateUser(User);
+            var userResult = await _userInteractor.CreateUser(User!);
 
             if (userResult.IsFailed)
             {

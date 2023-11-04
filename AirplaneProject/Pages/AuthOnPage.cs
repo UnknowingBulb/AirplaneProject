@@ -58,7 +58,7 @@ namespace AirplaneProject.Pages
                 }
                 if (_activeUser == null)
                 {
-                    var userResult = _userInteractor.GetUser(_authToken);
+                    var userResult = _userInteractor.GetUser(_authToken).Result;
                     if (userResult.IsSuccess)
                     {
                         _activeUser = userResult.Value;
@@ -79,7 +79,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var userResult = _userInteractor.GetUser(AuthLogin, AuthPassword);
+            var userResult = await _userInteractor.GetUser(AuthLogin, AuthPassword);
 
             if (userResult.IsFailed)
             {

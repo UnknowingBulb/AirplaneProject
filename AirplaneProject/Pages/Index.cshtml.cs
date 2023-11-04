@@ -1,6 +1,6 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
-using AirplaneProject.Interacotrs;
+using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AirplaneProject.Pages

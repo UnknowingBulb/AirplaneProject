@@ -2,7 +2,7 @@ using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DatabaseContextes;
-using AirplaneProject.Interacotrs;
+using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;

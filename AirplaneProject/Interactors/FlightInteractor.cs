@@ -1,8 +1,7 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Database.DatabaseContextes;
-using Microsoft.EntityFrameworkCore;
 
-namespace AirplaneProject.Interacotrs
+namespace AirplaneProject.Interactors
 {
     public class FlightInteractor
     {
