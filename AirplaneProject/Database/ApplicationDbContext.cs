@@ -1,9 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AiplaneProject.Objects;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database
 {
-    abstract public class ApplicationContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
+        public DbSet<Order> Order => Set<Order>();
+        public DbSet<Flight> Flight => Set<Flight>();
+        public DbSet<Passenger> Passenger => Set<Passenger>();
+        public DbSet<SeatReserve> SeatReserve => Set<SeatReserve>();
+        public DbSet<User> User => Set<User>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()

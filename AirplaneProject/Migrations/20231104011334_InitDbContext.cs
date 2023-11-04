@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AirplaneProject.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDb : Migration
+    public partial class InitDbContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,10 @@ namespace AirplaneProject.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DepartureDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    SeatingCapacity = table.Column<int>(type: "integer", nullable: false)
+                    SeatingCapacity = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    DepartureLocation = table.Column<string>(type: "text", nullable: false),
+                    DestinationLocation = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,7 +49,8 @@ namespace AirplaneProject.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FlightId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

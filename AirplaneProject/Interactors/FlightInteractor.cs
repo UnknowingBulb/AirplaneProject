@@ -1,14 +1,15 @@
 ﻿using AiplaneProject.Objects;
-using AirplaneProject.Database.DatabaseContextes;
+using AirplaneProject.Database;
+using AirplaneProject.Database.DbData;
 
 namespace AirplaneProject.Interactors
 {
     public class FlightInteractor
     {
-        private readonly FlightDbContext _flightDbContext;
-        public FlightInteractor(FlightDbContext flightDbContext)
+        private readonly FlightDb _flightDb;
+        public FlightInteractor(ApplicationDbContext dbContext)
         {
-            _flightDbContext = flightDbContext;
+            _flightDb = new FlightDb(dbContext);
         }
 
         /// <summary>
@@ -16,7 +17,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public IQueryable<Flight> GetUpcomingFlights()
         {
-            return _flightDbContext.Flight.Where(f => f.DepartureDateTime>=DateTime.UtcNow).OrderBy(f => f.DepartureDateTime);
+            return _flightDb.GetUpcomingFlights();
         }
     }
 }
