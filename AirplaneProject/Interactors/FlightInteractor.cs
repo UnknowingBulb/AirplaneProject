@@ -1,5 +1,6 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Database.DatabaseContextes;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Interacotrs
 {
@@ -14,9 +15,9 @@ namespace AirplaneProject.Interacotrs
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public IEnumerable<Flight> GetUpcomingFlights()
+        public IQueryable<Flight> GetUpcomingFlights()
         {
-            return _flightDbContext.Flight.Where(f => f.DepartureDateTime>=DateTime.UtcNow);
+            return _flightDbContext.Flight.Where(f => f.DepartureDateTime>=DateTime.UtcNow).OrderBy(f => f.DepartureDateTime);
         }
     }
 }

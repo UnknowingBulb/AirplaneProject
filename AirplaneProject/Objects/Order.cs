@@ -18,6 +18,10 @@
         /// </summary>
         public Guid UserId { get; set; }
         /// <summary>
+        /// Стоимость заказа
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
         /// Пользователь-автор заказа
         /// </summary>
         public User User { get; set; }

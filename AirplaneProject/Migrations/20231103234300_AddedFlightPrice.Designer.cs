@@ -3,6 +3,7 @@ using System;
 using AirplaneProject.Database.DatabaseContextes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirplaneProject.Migrations
 {
     [DbContext(typeof(FlightDbContext))]
-    partial class FlightDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103234300_AddedFlightPrice")]
+    partial class AddedFlightPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,6 @@ namespace AirplaneProject.Migrations
 
                     b.Property<DateTime>("DepartureDateTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DepartureLocation")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DestinationLocation")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int>("Price")
                         .HasColumnType("integer");

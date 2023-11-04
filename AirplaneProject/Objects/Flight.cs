@@ -18,6 +18,18 @@
         /// </summary>
         public int SeatingCapacity { get; set; }
         /// <summary>
+        /// Цена билета
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// Место отправления
+        /// </summary>
+        public string DepartureLocation { get; set; }
+        /// <summary>
+        /// Место прибытия
+        /// </summary>
+        public string DestinationLocation { get; set; }
+        /// <summary>
         /// Заказы на данный рейс
         /// </summary>
         public List<Order> Orders { get; set; } = new();

@@ -8,54 +8,26 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Users != null)
-            {
-                foreach (var contact in Model.Users)
-                {
-                    <tr>
-                        <td> @contact.Id </td>
-                        <td>@contact.Name</td>
-                        <td>
-                            <!-- <snippet_Edit> -->
-                            <a asp-page="./Edit" asp-route-id="@contact.Id">Edit</a> |
-                            <!-- </snippet_Edit> -->
-                            <!-- <snippet_Delete> -->
-                            <button type="submit" asp-page-handler="delete" asp-route-id="@contact.Id">delete</button>
-                            <!-- </snippet_Delete> -->
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
                 <th>Время отправления (UTC)</th>
+                <th>Город отправления</th>
+                <th>Направляется в</th>
+                <th>Цена билета</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             @if (Model.Flights != null)
             {
-                foreach (var contact in Model.Flights)
+                foreach (var flight in Model.Flights)
                 {
                     <tr>
-                        <td> @contact.Id </td>
-                        <td>@contact.DepartureDateTime</td>
+                        <td> @flight.Id </td>
+                        <td>@flight.DepartureDateTime</td>
+                        <td>@flight.DepartureLocation</td>
+                        <td>@flight.DestinationLocation</td>
+                        <td>@flight.Price</td>
                         <td>
-                            <!-- <snippet_Edit> -->
-                            <a asp-page="./Edit" asp-route-id="@contact.Id">Edit</a> |
-                            <!-- </snippet_Edit> -->
-                            <!-- <snippet_Delete> -->
-                            <button type="submit" asp-page-handler="delete" asp-route-id="@contact.Id">delete</button>
-                            <!-- </snippet_Delete> -->
+                            <button type="submit" asp-page-handler="Buy" asp-route-id="@flight.Id">Купить билет</button>
                         </td>
                     </tr>
                 }
