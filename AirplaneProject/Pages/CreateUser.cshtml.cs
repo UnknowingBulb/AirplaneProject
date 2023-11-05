@@ -20,7 +20,7 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public User? CreatedUser { get; set; }
+        public UserModel? CreatedUser { get; set; }
 
         /// <summary>
         /// Регистрация

@@ -18,7 +18,7 @@ namespace AirplaneProject.Authorization
         /// Получить пользователя по токену авторизации
         /// </summary>
         /// <param name="authToken">Токен</param>
-        public async Task<Result<User>> GetUserAsync(string? authToken)
+        public async Task<Result<UserModel>> GetUserAsync(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
                 return Result.Fail("Не удалось получить пользователя");
@@ -43,7 +43,7 @@ namespace AirplaneProject.Authorization
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        public async Task<Result<User>> GetUserAsync(string login, string password)
+        public async Task<Result<UserModel>> GetUserAsync(string login, string password)
         {
             if (login == string.Empty)
                 return Result.Fail("Логин пуст, заполните поле");
@@ -63,7 +63,7 @@ namespace AirplaneProject.Authorization
         /// Создать пользователя с сохранением в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public async Task<Result<User>> CreateUserAsync(User user)
+        public async Task<Result<UserModel>> CreateUserAsync(UserModel user)
         {
             var validationResult = await ValidateUserForRegistrationAsync(user);
             if (validationResult.IsFailed)
@@ -83,7 +83,7 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        private async Task<Result> ValidateUserForRegistrationAsync(User user)
+        private async Task<Result> ValidateUserForRegistrationAsync(UserModel user)
         {
             var result = Result.Ok();
             if (user == null)

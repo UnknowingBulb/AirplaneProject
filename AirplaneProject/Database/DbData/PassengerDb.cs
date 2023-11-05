@@ -17,7 +17,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить пассажира
         /// </summary>
-        public ValueTask<Passenger?> GetAsync(Guid id)
+        public ValueTask<PassengerModel?> GetAsync(Guid id)
         {
             return _dbContext.Passenger.FindAsync(id);
         }
@@ -25,7 +25,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
-        public Task<List<Passenger>> GetUserPassengersAsync(Guid userId)
+        public Task<List<PassengerModel>> GetUserPassengersAsync(Guid userId)
         {
             return _dbContext.Passenger.Where(passenger =>  passenger.UserId == userId).ToListAsync();
         }
@@ -33,7 +33,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить пассажира
         /// </summary>
-        public Task SaveAsync(Passenger passenger)
+        public Task SaveAsync(PassengerModel passenger)
         {
             _dbContext.Passenger.Add(passenger);
             return _dbContext.SaveChangesAsync();

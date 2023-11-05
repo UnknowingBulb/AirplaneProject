@@ -5,7 +5,7 @@ namespace AirplaneProject.Objects
     /// <summary>
     /// Пользователь сайта
     /// </summary>
-    public class User
+    public class UserModel
     {
         /// <summary>
         /// Идентификатор пользователя

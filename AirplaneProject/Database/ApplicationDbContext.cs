@@ -7,11 +7,11 @@ namespace AirplaneProject.Database
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Order> Order => Set<Order>();
-        public DbSet<Flight> Flight => Set<Flight>();
-        public DbSet<Passenger> Passenger => Set<Passenger>();
-        public DbSet<SeatReserve> SeatReserve => Set<SeatReserve>();
-        public DbSet<User> User => Set<User>();
+        public DbSet<OrderModel> Order => Set<OrderModel>();
+        public DbSet<FlightModel> Flight => Set<FlightModel>();
+        public DbSet<PassengerModel> Passenger => Set<PassengerModel>();
+        public DbSet<SeatReserveModel> SeatReserve => Set<SeatReserveModel>();
+        public DbSet<UserModel> User => Set<UserModel>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

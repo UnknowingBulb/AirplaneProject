@@ -19,8 +19,9 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить заказ
         /// </summary>
-        public async Task SaveAsync(Order order)
-        {
+        public async Task SaveAsync(OrderModel order)
+        {/*
+          * TODO: проверить и мб удалить
             // Этот черт может пытаться добавить пассажира, даже если он уже существует
             // Поэтому действуем на опережение и говорим ему, что такие пассажиры могут быть сохранены
             foreach (var seatReserve in order.SeatReserves)
@@ -38,7 +39,7 @@ namespace AirplaneProject.Database.DbData
                     }
                     _dbContext.Add(seatReserve.Passenger);
                 }
-            }
+            }*/
             await _dbContext.Order.AddAsync(order);
 
             await _dbContext.SaveChangesAsync();
@@ -47,7 +48,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public ValueTask<Order?> GetAsync(Guid id)
+        public ValueTask<OrderModel?> GetAsync(Guid id)
         {
             return _dbContext.Order.FindAsync(id);
         }
@@ -55,7 +56,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить список заказов определенного пользователя
         /// </summary>
-        public Task<List<Order>> GetOrdersByUserAsync(Guid userId)
+        public Task<List<OrderModel>> GetOrdersByUserAsync(Guid userId)
         {
             return _dbContext.Order.Where(order => order.UserId == userId).ToListAsync();
         }
@@ -63,7 +64,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить список заказов пользователя по полному/частичному совпадению в ФИО
         /// </summary>
-        public Task<List<Order>> GetOrdersByUserNameAsync(string name)
+        public Task<List<OrderModel>> GetOrdersByUserNameAsync(string name)
         {
             return _dbContext.Order.Where(order => order.User.Name.Contains(name)).ToListAsync();
         }
@@ -71,7 +72,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить список заказов пользователя по номеру телефона
         /// </summary>
-        public Task<List<Order>> GetOrdersByUserPhoneAsync(string phone)
+        public Task<List<OrderModel>> GetOrdersByUserPhoneAsync(string phone)
         {
             return _dbContext.Order.Where(order => order.User.PhoneNumber == phone).ToListAsync();
         }

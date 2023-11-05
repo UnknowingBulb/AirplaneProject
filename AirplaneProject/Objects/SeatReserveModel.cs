@@ -3,7 +3,7 @@
     /// <summary>
     /// Информация по резерву места на рейс
     /// </summary>
-    public class SeatReserve
+    public class SeatReserveModel
     {
         /// <summary>
         /// Идентификатор резерва
@@ -20,7 +20,7 @@
         /// <summary>
         /// Инфо о пассажире
         /// </summary>
-        public virtual Passenger Passenger { get; set; }
+        public virtual PassengerModel Passenger { get; set; }
         /// <summary>
         /// Номер занятого места
         /// </summary>

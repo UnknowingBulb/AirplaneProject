@@ -20,11 +20,11 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Список ближайших полетов
         /// </summary>
-        public List<Flight> Flights { get; set; }
+        public List<FlightModel> Flights { get; set; }
         /// <summary>
         /// Список заказов текущего пользователя
         /// </summary>
-        public List<Order> ActiveUserOrders { get; set; }
+        public List<OrderModel> ActiveUserOrders { get; set; }
 
         public async Task OnGetAsync()
         {

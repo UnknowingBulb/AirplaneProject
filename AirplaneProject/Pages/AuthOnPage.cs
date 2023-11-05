@@ -11,7 +11,7 @@ namespace AirplaneProject.Pages
     {
         private readonly UserInteractor _userInteractor;
         private string? _authToken;
-        private User? _activeUser;
+        private UserModel? _activeUser;
 
         public AuthOnPage(UserInteractor userInteractor)
         {
@@ -49,7 +49,7 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Текущий пользователь
         /// </summary>
-        public User? ActiveUser
+        public UserModel? ActiveUser
         {
             get
             {

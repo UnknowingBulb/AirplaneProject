@@ -21,7 +21,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Создать заказ
         /// </summary>
-        public async Task<Result> CreateAsync(Order order)
+        public async Task<Result> CreateAsync(OrderModel order)
         {
             var isOrderValid = ValidateOrderAsync(order);
             if (isOrderValid.IsFailed)
@@ -34,7 +34,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Установить, что заказ неактивен
         /// </summary>
-        public Task SetNotActiveAsync(Order order)
+        public Task SetNotActiveAsync(OrderModel order)
         {
             ValidateOrderToChange(order);
             order.IsActive = false;
@@ -44,7 +44,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<Order>> GetAsync(Guid id)
+        public async Task<Result<OrderModel>> GetAsync(Guid id)
         {
             var order = await _orderDb.GetAsync(id);
             if (order == null)
@@ -57,7 +57,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь
         /// </summary>
-        public async Task<Result<List<Order>>> GetOrdersByUserAsync(Guid userId)
+        public async Task<Result<List<OrderModel>>> GetOrdersByUserAsync(Guid userId)
         {
             var orders = await _orderDb.GetOrdersByUserAsync(userId);
             if (orders.IsNullOrEmpty())
@@ -70,7 +70,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь по полному/частичному совпадению ФИО
         /// </summary>
-        public async Task<Result<List<Order>>> GetOrdersByUserNameAsync(string userName)
+        public async Task<Result<List<OrderModel>>> GetOrdersByUserNameAsync(string userName)
         {
             var orders = await _orderDb.GetOrdersByUserNameAsync(userName);
             if (orders.IsNullOrEmpty())
@@ -83,7 +83,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы по номеру телефона пользователя
         /// </summary>
-        public async Task<Result<List<Order>>> GetOrdersByPhoneAsync(string phoneNumber)
+        public async Task<Result<List<OrderModel>>> GetOrdersByPhoneAsync(string phoneNumber)
         {
             var orders = await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber);
             if (orders.IsNullOrEmpty())
@@ -93,7 +93,7 @@ namespace AirplaneProject.Interactors
             return Result.Ok(orders);
         }
 
-        private Result ValidateOrderAsync(Order order)
+        private Result ValidateOrderAsync(OrderModel order)
         {
             var result = ValidateOrderToChange(order);
             if (result.IsFailed)
@@ -110,7 +110,7 @@ namespace AirplaneProject.Interactors
             return result;
         }
 
-        private Result ValidateOrderToChange(Order order)
+        private Result ValidateOrderToChange(OrderModel order)
         {
             if (order == null)
                 return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");

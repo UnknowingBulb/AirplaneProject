@@ -25,13 +25,13 @@ namespace AirplaneProject.Pages
         /// Рейс, на который оформляем билет
         /// </summary>
         [BindProperty]
-        public Flight Flight { get; set; }
+        public FlightModel Flight { get; set; }
 
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
         [BindProperty]
-        public List<Passenger> UserPassengers { get; set; }
+        public List<PassengerModel> UserPassengers { get; set; }
 
         /// <summary>
         /// Ошибки открытия страницы
@@ -47,7 +47,7 @@ namespace AirplaneProject.Pages
         /// Список билетов, которые берем на рейс
         /// </summary>
         [BindProperty]
-        public List<SeatReserve> SeatReserves { get; set; } = new List<SeatReserve>();
+        public List<SeatReserveModel> SeatReserves { get; set; } = new List<SeatReserveModel>();
 
         //TODO: добавить везде в асинк cancellation
         public async Task OnGetAsync(Guid flightId)
@@ -81,7 +81,7 @@ namespace AirplaneProject.Pages
             if (UserPassengers.IsNullOrEmpty())
             {
                 UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
-                var newEmptyPassenger = new Passenger
+                var newEmptyPassenger = new PassengerModel
                 {
                     Id = Guid.Empty,
                     Name = ActiveUser!.Name,
@@ -91,7 +91,7 @@ namespace AirplaneProject.Pages
                 UserPassengers.Insert(0, newEmptyPassenger);
             }
 
-            var seatReserve = new SeatReserve()
+            var seatReserve = new SeatReserveModel()
             {
                 Id = Guid.NewGuid(),
                 SeatNumber = EmptySeatNumbers.First(),
@@ -113,7 +113,7 @@ namespace AirplaneProject.Pages
             if (UserPassengers.IsNullOrEmpty())
             {
                 UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
-                var newEmptyPassenger = new Passenger
+                var newEmptyPassenger = new PassengerModel
                 {
                     Id = Guid.Empty,
                     Name = ActiveUser!.Name,
@@ -133,7 +133,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var order = new Order()
+            var order = new OrderModel()
             {
                 Id = Guid.NewGuid(),
                 Flight = flight.Value,
