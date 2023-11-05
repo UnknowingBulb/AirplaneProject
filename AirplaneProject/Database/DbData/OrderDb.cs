@@ -16,7 +16,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить заказ
         /// </summary>
-        public Task Save(Order order)
+        public Task SaveAsync(Order order)
         {
             _dbContext.Order.Add(order);
             return _dbContext.SaveChangesAsync();
@@ -25,7 +25,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public ValueTask<Order?> GetOrder(Guid id)
+        public ValueTask<Order?> GetOrderAsync(Guid id)
         {
             return _dbContext.Order.FindAsync(id);
         }

@@ -22,7 +22,7 @@ namespace AirplaneProject.Interactors
         public Task Create(Order order)
         {
             ValidateOrder(order);
-            return _orderDb.Save(order);
+            return _orderDb.SaveAsync(order);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AirplaneProject.Interactors
             ValidateOrder(order);
             //TODO: check smth
             order.IsActive = false;
-            return _orderDb.Save(order);
+            return _orderDb.SaveAsync(order);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public async Task<Result<Order>> GetOrder(Guid id) 
         {
-            var order = await _orderDb.GetOrder(id);
+            var order = await _orderDb.GetOrderAsync(id);
             if (order == null)
             {
                 return Result.Fail("Не удалось найти заказ");

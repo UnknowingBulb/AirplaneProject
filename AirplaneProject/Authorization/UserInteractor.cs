@@ -18,7 +18,7 @@ namespace AirplaneProject.Authorization
         /// Получить пользователя по токену авторизации
         /// </summary>
         /// <param name="authToken">Токен</param>
-        public async Task<Result<User>> GetUser(string? authToken)
+        public async Task<Result<User>> GetUserAsync(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
                 return Result.Fail("Не удалось получить пользователя");
@@ -32,7 +32,7 @@ namespace AirplaneProject.Authorization
             if (userId == null)
                 return Result.Fail("Не удалось получить данные из токена");
 
-            var userFromDb = await _userDb.Get(userId);
+            var userFromDb = await _userDb.GetAsync(userId);
             if (userFromDb == null)
                 return Result.Fail("Не удалось найти пользователя в БД");
             return userFromDb;
@@ -43,7 +43,7 @@ namespace AirplaneProject.Authorization
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        public async Task<Result<User>> GetUser(string login, string password)
+        public async Task<Result<User>> GetUserAsync(string login, string password)
         {
             if (login == string.Empty)
                 return Result.Fail("Логин пуст, заполните поле");
@@ -51,7 +51,7 @@ namespace AirplaneProject.Authorization
             if (password == string.Empty)
                 return Result.Fail("Пароль пуст, заполните поле");
 
-            var customerUser = await _userDb.GetByLogin(login);
+            var customerUser = await _userDb.GetByLoginAsync(login);
 
             if (customerUser == null || !PasswordHasher.Validate(customerUser.Password, password))
                 return Result.Fail("Неправильное имя пользователя или пароль");
@@ -63,9 +63,9 @@ namespace AirplaneProject.Authorization
         /// Создать пользователя с сохранением в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public async Task<Result<User>> CreateUser(User user)
+        public async Task<Result<User>> CreateUserAsync(User user)
         {
-            var validationResult = await IsUserValidForRegistration(user);
+            var validationResult = await IsUserValidForRegistrationAsync(user);
             if (validationResult.IsFailed)
             {
                 return validationResult;
@@ -74,7 +74,7 @@ namespace AirplaneProject.Authorization
             user.Password = PasswordHasher.Hash(user.Password);
             user.IsEmployee = false;
 
-            await _userDb.Save(user);
+            await _userDb.SaveAsync(user);
 
             return user;
         }
@@ -83,7 +83,7 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        private async Task<Result> IsUserValidForRegistration(User user)
+        private async Task<Result> IsUserValidForRegistrationAsync(User user)
         {
             var failResult = Result.Ok();
             if (user == null)
@@ -101,7 +101,7 @@ namespace AirplaneProject.Authorization
             if (IsPhoneNumberValid(user.PhoneNumber))
                 failResult = Result.Merge(failResult, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
 
-            if (await _userDb.IsAnyWithSameLogin(user.Login))
+            if (await _userDb.IsAnyWithSameLoginAsync(user.Login))
                 failResult = Result.Merge(failResult, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
             return failResult;

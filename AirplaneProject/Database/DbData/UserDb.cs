@@ -17,7 +17,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить пользователя
         /// </summary>
-        public ValueTask<User?> Get(Guid id)
+        public ValueTask<User?> GetAsync(Guid id)
         {
             return _dbContext.User.FindAsync(id);
         }
@@ -25,15 +25,15 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить пользователя
         /// </summary>
-        public ValueTask<User?> Get(string id)
+        public ValueTask<User?> GetAsync(string id)
         {
-            return Get(new Guid(id));
+            return GetAsync(new Guid(id));
         }
 
         /// <summary>
         /// Получить пользователя с указанным логином
         /// </summary>
-        public Task<User?> GetByLogin(string login)
+        public Task<User?> GetByLoginAsync(string login)
         {
             return _dbContext.User.FirstOrDefaultAsync(user => user.Login == login);
         }
@@ -41,7 +41,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить пользователя
         /// </summary>
-        public Task Save(User user)
+        public Task SaveAsync(User user)
         {
             _dbContext.User.Add(user);
             return _dbContext.SaveChangesAsync();
@@ -50,7 +50,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Возвращает есть ли в БД пользователи с таким логином
         /// </summary>
-        public Task<bool> IsAnyWithSameLogin(string login)
+        public Task<bool> IsAnyWithSameLoginAsync(string login)
         {
             return _dbContext.User.AnyAsync(c => c.Login == login);
         }

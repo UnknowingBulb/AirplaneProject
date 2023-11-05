@@ -58,7 +58,7 @@ namespace AirplaneProject.Pages
                 }
                 if (_activeUser == null)
                 {
-                    var userResult = _userInteractor.GetUser(_authToken).Result;
+                    var userResult = _userInteractor.GetUserAsync(_authToken).Result;
                     if (userResult.IsSuccess)
                     {
                         _activeUser = userResult.Value;
@@ -71,7 +71,7 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Логин
         /// </summary>
-        public async Task<IActionResult> OnPostLogin()
+        public async Task<IActionResult> OnPostLoginAsync()
         {
             if (AuthLogin.IsNullOrEmpty() || AuthPassword.IsNullOrEmpty())
             {
@@ -79,7 +79,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var userResult = await _userInteractor.GetUser(AuthLogin, AuthPassword);
+            var userResult = await _userInteractor.GetUserAsync(AuthLogin, AuthPassword);
 
             if (userResult.IsFailed)
             {
@@ -99,7 +99,7 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Разлогин
         /// </summary>
-        public async Task<IActionResult> OnPostLogout()
+        public IActionResult OnPostLogout()
         {
             Response.Cookies.Delete("authToken");
             _authToken = null;
