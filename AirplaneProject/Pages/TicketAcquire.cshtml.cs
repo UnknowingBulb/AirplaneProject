@@ -2,6 +2,7 @@ using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 
@@ -23,11 +24,13 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Рейс, на который оформляем билет
         /// </summary>
+        [BindProperty]
         public Flight Flight { get; set; }
 
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
+        [BindProperty]
         public List<Passenger> UserPassengers { get; set; }
 
         /// <summary>
@@ -40,7 +43,13 @@ namespace AirplaneProject.Pages
         /// </summary>
         public List<int> EmptySeatNumbers { get; set; }
 
-        public async Task OnGet(Guid flightId)
+        /// <summary>
+        /// Список билетов, которые берем на рейс
+        /// </summary>
+        [BindProperty]
+        public List<SeatReserve> SeatReserves { get; set; } = new List<SeatReserve>();
+
+        public async Task OnGetAsync(Guid flightId)
         {
             var flightResult = await _flightInteractor.GetAsync(flightId);
             if (flightResult.IsFailed)
@@ -52,7 +61,7 @@ namespace AirplaneProject.Pages
             Flight = flightResult.Value;
 
             var emptySeatsResult = await _flightInteractor.GetEmptySeatNumbers(flightId);
-            if(emptySeatsResult.IsFailed)
+            if (emptySeatsResult.IsFailed)
             {
                 Error = TicketAcquireErrors.SeatsInfoError;
                 return;
@@ -66,6 +75,33 @@ namespace AirplaneProject.Pages
             EmptySeatNumbers = emptySeatsResult.Value;
 
             UserPassengers = await _passengerInteractor.GetUserPassengers(ActiveUser.Id);
+        }
+
+        public async Task OnPostAddTicketAsync(Guid flightId)
+        {
+            await OnGetAsync(flightId);
+            if (!Error.IsNullOrEmpty())
+                return;
+
+            var seatReserve = new SeatReserve();
+            if (UserPassengers.IsNullOrEmpty())
+            {
+                seatReserve.Passenger = new Passenger
+                {
+                    Id = Guid.NewGuid(),
+                    Name = ActiveUser.Name,
+                    PassportData = string.Empty,
+                    UserId = ActiveUser.Id,
+                };
+            }
+            else
+            {
+                seatReserve.Passenger = UserPassengers[0];
+            }
+
+            seatReserve.SeatNumber = EmptySeatNumbers.First();
+
+            SeatReserves.Add(seatReserve);
         }
     }
 

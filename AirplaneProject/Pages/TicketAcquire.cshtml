@@ -3,7 +3,7 @@
 
 <h3>Купить билет</h3>
 
-@if (@Model.Error == TicketAcquireErrors.FlightInfoError)
+@if (Model.Error == TicketAcquireErrors.FlightInfoError)
 {
     <div class="error-text">@Model.Error</div>
 }
@@ -13,15 +13,41 @@ else
         <h4>Рейс:</h4>
         <div>@Model.Flight.DepartureLocation - @Model.Flight.DestinationLocation</div>
         <div>Отправление в @Model.Flight.DepartureDateTime (UTC)</div>
+        <div>Цена одного билета: @Model.Flight.Price</div>
     </div>
     <div>
-        @if (@Model.Error == TicketAcquireErrors.SeatsInfoError || @Model.Error == TicketAcquireErrors.NoSeatsError)
+        @if (Model.Error == TicketAcquireErrors.SeatsInfoError || Model.Error == TicketAcquireErrors.NoSeatsError)
         {
             <div class="error-text">@Model.Error</div>
         }
         else
         {
-            <button type="submit" asp-page-handler="AddTicket">Добавить билет</button>
+            <form method="post">
+                @for(var srNumber = 0; srNumber <Model.SeatReserves.Count; srNumber++)
+                {
+                    <h6>Билет №@(srNumber+1)</h6>
+                    <div class="row-columns">
+                        <div class="column-names login-text">ФИО пассажира:</div>
+                        <input class="column-inputs login-input" asp-for="SeatReserves[srNumber].Passenger.Name" />
+                    </div>
+                    <div class="row-columns">
+                        <div class="column-names login-text">Серия и номер паспорта</div>
+                        <input class="column-inputs login-input" asp-for="SeatReserves[srNumber].Passenger.PassportData" />
+                    </div>
+
+                    <div class="row-columns">
+                        <div class="column-names login-text">Место в самолете</div>
+                        <select class="column-inputs login-input" asp-for="SeatReserves[srNumber].SeatNumber" asp-items=@(new SelectList(Model.EmptySeatNumbers))></select>
+                    </div>
+                }
+                <button type="submit" asp-page-handler="AddTicket" asp-route-flightId="@Model.Flight.Id">Добавить билет</button>
+            </form>
+            @if (Model.SeatReserves.Count > 0)
+            {
+                <h5>
+                    Общая стоимость: @(Model.Flight.Price * Model.SeatReserves.Count)
+                </h5>
+            }
         }
     </div>
 }
