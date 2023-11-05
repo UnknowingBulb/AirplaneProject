@@ -2,6 +2,9 @@
 
 namespace AirplaneProject.Database.DbData
 {
+    /// <summary>
+    /// Работа с БД по рейсам
+    /// </summary>
     public class FlightDb
     {
         private readonly ApplicationDbContext _dbContext;

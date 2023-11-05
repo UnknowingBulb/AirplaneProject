@@ -10,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<UserInteractor>();
 builder.Services.AddScoped<FlightInteractor>();
+builder.Services.AddScoped<OrderInteractor>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

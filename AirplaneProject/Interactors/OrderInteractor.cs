@@ -16,12 +16,18 @@ namespace AirplaneProject.Interactors
             _orderDb = new OrderDb(dbContext);
         }
 
+        /// <summary>
+        /// Создать заказ
+        /// </summary>
         public Task Create(Order order)
         {
             ValidateOrder(order);
             return _orderDb.Save(order);
         }
 
+        /// <summary>
+        /// Установить, что заказ неактивен
+        /// </summary>
         public Task SetNotActive(Order order)
         {
             ValidateOrder(order);
@@ -30,6 +36,9 @@ namespace AirplaneProject.Interactors
             return _orderDb.Save(order);
         }
 
+        /// <summary>
+        /// Получить заказ
+        /// </summary>
         public async Task<Result<Order>> GetOrder(Guid id) 
         {
             var order = await _orderDb.GetOrder(id);
@@ -40,9 +49,12 @@ namespace AirplaneProject.Interactors
             return order;
         }
 
-        public Result<IQueryable<Order>> GetOrdersByPhone(string phoneNumber)
+        /// <summary>
+        /// Получить заказы, которые сделал пользователь
+        /// </summary>
+        public Result<IQueryable<Order>> GetOrdersByUser(Guid userId)
         {
-            var orders = _orderDb.GetOrdersByUserPhone(phoneNumber);
+            var orders = _orderDb.GetOrdersByUser(userId);
             if (orders.IsNullOrEmpty())
             {
                 return Result.Fail("Не удалось найти заказы");
@@ -50,9 +62,12 @@ namespace AirplaneProject.Interactors
             return Result.Ok(orders);
         }
 
-        public Result<IQueryable<Order>> GetOrdersByUser(Guid userId)
+        /// <summary>
+        /// Получить заказы по номеру телефона пользователя
+        /// </summary>
+        public Result<IQueryable<Order>> GetOrdersByPhone(string phoneNumber)
         {
-            var orders = _orderDb.GetOrdersByUser(userId);
+            var orders = _orderDb.GetOrdersByUserPhone(phoneNumber);
             if (orders.IsNullOrEmpty())
             {
                 return Result.Fail("Не удалось найти заказы");

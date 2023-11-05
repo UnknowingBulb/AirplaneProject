@@ -34,5 +34,36 @@
             }
         </tbody>
     </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Время отправления (UTC)</th>
+                <th>Город отправления</th>
+                <th>Направляется в</th>
+                <th>Цена заказа</th>
+                <th>Статус заказа</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ActiveUserOrders != null)
+            {
+                foreach (var order in Model.ActiveUserOrders)
+                {
+                    <tr>
+                        <td>@order.Flight.DepartureDateTime</td>
+                        <td>@order.Flight.DepartureLocation</td>
+                        <td>@order.Flight.DestinationLocation</td>
+                        <td>@order.Price</td>
+                        <td>@(order.IsActive? "Активен":"Отменен")</td>
+                        <td>
+                            <button type="submit" asp-page-handler="Cancel" asp-route-id="@order.Id">Отменить заказ</button>
+                        </td>
+                    </tr>
+                }
+            }
+            }
+
+        </tbody>
+    </table>
     <a asp-page="Create">Create New</a>
 </form>
