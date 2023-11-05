@@ -1,4 +1,4 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using Microsoft.AspNetCore.Authorization;

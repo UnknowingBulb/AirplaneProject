@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AiplaneProject.Objects;
+using AirplaneProject.Objects;
 using AirplaneProject.Authorization;
-using FluentResults;
-using System.Text;
+using AirplaneProject.Errors;
 
 namespace AirplaneProject.Pages
 {
@@ -33,13 +32,7 @@ namespace AirplaneProject.Pages
 
             if (userResult.IsFailed)
             {
-                //TODO: вынести куда-нибудь в другое место
-                var errorMessages = new StringBuilder();
-                foreach (var error in userResult.Errors)
-                {
-                    errorMessages.AppendLine(error.Message);
-                }
-                ModelState.AddModelError("RegistrationError", errorMessages.ToString());
+                ModelState.AddModelError("RegistrationError", userResult.GetResultErrorMessages());
                 return Page();
             }
 

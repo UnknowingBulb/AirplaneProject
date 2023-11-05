@@ -1,10 +1,9 @@
-using AiplaneProject.Objects;
+using AirplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
 
 namespace AirplaneProject.Pages
 {
@@ -60,19 +59,14 @@ namespace AirplaneProject.Pages
 
             Flight = flightResult.Value;
 
-            var emptySeatsResult = await _flightInteractor.GetEmptySeatNumbers(flightId);
-            if (emptySeatsResult.IsFailed)
-            {
-                Error = TicketAcquireErrors.SeatsInfoError;
-                return;
-            }
-            if (emptySeatsResult.Value.IsNullOrEmpty())
+            var emptySeatsResult = _flightInteractor.GetEmptySeatNumbers(Flight);
+            if (emptySeatsResult.IsNullOrEmpty())
             {
                 Error = TicketAcquireErrors.NoSeatsError;
                 return;
             }
 
-            EmptySeatNumbers = emptySeatsResult.Value;
+            EmptySeatNumbers = emptySeatsResult.ToList();
 
             UserPassengers = await _passengerInteractor.GetUserPassengers(ActiveUser.Id);
         }
@@ -103,12 +97,32 @@ namespace AirplaneProject.Pages
 
             SeatReserves.Add(seatReserve);
         }
+
+        public async Task OnPostCompleteOrderAsync(Guid flightId)
+        {
+            await OnGetAsync(flightId);
+            var order = new Order()
+            {
+                Id = Guid.NewGuid(),
+                Flight = Flight,
+                UserId = ActiveUser.Id,
+                Price =Flight.Price * SeatReserves.Count,
+                SeatReserves = SeatReserves,
+                IsActive = true
+
+            };
+            var orderResult = await _orderInteractor.CreateAsync(order);
+            if (orderResult.IsFailed)
+            {
+                Error = $"Ошибка оформления заказа: {orderResult.Errors[0].Message}";
+                return;
+            }
+        }
     }
 
     struct TicketAcquireErrors
     {
         public const string FlightInfoError = "Ошибка при получении данных о рейсе";
-        public const string SeatsInfoError = "Ошибка при получении данных о свободных местах";
         public const string NoSeatsError = "К сожалению, на рейс не осталось билетов. Посмотрите другие рейсы";
     }
 }

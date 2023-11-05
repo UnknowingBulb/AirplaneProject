@@ -16,16 +16,16 @@ else
         <div>Цена одного билета: @Model.Flight.Price</div>
     </div>
     <div>
-        @if (Model.Error == TicketAcquireErrors.SeatsInfoError || Model.Error == TicketAcquireErrors.NoSeatsError)
+        @if (Model.Error == TicketAcquireErrors.NoSeatsError)
         {
             <div class="error-text">@Model.Error</div>
         }
         else
         {
             <form method="post">
-                @for(var srNumber = 0; srNumber <Model.SeatReserves.Count; srNumber++)
+                @for (var srNumber = 0; srNumber < Model.SeatReserves.Count; srNumber++)
                 {
-                    <h6>Билет №@(srNumber+1)</h6>
+                    <h6>Билет №@(srNumber + 1)</h6>
                     <div class="row-columns">
                         <div class="column-names login-text">ФИО пассажира:</div>
                         <input class="column-inputs login-input" asp-for="SeatReserves[srNumber].Passenger.Name" />
@@ -41,13 +41,15 @@ else
                     </div>
                 }
                 <button type="submit" asp-page-handler="AddTicket" asp-route-flightId="@Model.Flight.Id">Добавить билет</button>
+                @if (Model.SeatReserves.Count > 0)
+                {
+                    <h5>
+                        Общая стоимость: @(Model.Flight.Price * Model.SeatReserves.Count)
+                    </h5>
+                    <button type="submit" asp-page-handler="CompleteOrder" asp-route-flightId="@Model.Flight.Id">Оформить заказ</button>
+
+                }
             </form>
-            @if (Model.SeatReserves.Count > 0)
-            {
-                <h5>
-                    Общая стоимость: @(Model.Flight.Price * Model.SeatReserves.Count)
-                </h5>
-            }
         }
     </div>
 }

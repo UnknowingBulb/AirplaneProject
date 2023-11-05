@@ -1,4 +1,4 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database

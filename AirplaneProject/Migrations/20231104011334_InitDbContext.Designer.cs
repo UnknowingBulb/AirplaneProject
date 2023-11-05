@@ -25,7 +25,7 @@ namespace AirplaneProject.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AiplaneProject.Objects.Flight", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Flight", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace AirplaneProject.Migrations
                     b.ToTable("Flight");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Order", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +77,7 @@ namespace AirplaneProject.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Passenger", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Passenger", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace AirplaneProject.Migrations
                     b.ToTable("Passenger");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.SeatReserve", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.SeatReserve", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,7 +125,7 @@ namespace AirplaneProject.Migrations
                     b.ToTable("SeatReserve");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.User", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,15 +156,15 @@ namespace AirplaneProject.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Order", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Order", b =>
                 {
-                    b.HasOne("AiplaneProject.Objects.Flight", null)
+                    b.HasOne("AirplaneProject.Objects.Flight", null)
                         .WithMany("Orders")
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AiplaneProject.Objects.User", "User")
+                    b.HasOne("AirplaneProject.Objects.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -173,9 +173,9 @@ namespace AirplaneProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Passenger", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Passenger", b =>
                 {
-                    b.HasOne("AiplaneProject.Objects.User", "User")
+                    b.HasOne("AirplaneProject.Objects.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -184,15 +184,15 @@ namespace AirplaneProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.SeatReserve", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.SeatReserve", b =>
                 {
-                    b.HasOne("AiplaneProject.Objects.Order", null)
+                    b.HasOne("AirplaneProject.Objects.Order", null)
                         .WithMany("SeatReserves")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AiplaneProject.Objects.Passenger", "Passenger")
+                    b.HasOne("AirplaneProject.Objects.Passenger", "Passenger")
                         .WithMany()
                         .HasForeignKey("PassengerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -201,12 +201,12 @@ namespace AirplaneProject.Migrations
                     b.Navigation("Passenger");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Flight", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Flight", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("AiplaneProject.Objects.Order", b =>
+            modelBuilder.Entity("AirplaneProject.Objects.Order", b =>
                 {
                     b.Navigation("SeatReserves");
                 });

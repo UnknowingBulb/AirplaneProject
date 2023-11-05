@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AiplaneProject.Objects
+namespace AirplaneProject.Objects
 {
     /// <summary>
     /// Пользователь сайта

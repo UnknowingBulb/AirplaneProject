@@ -1,7 +1,8 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
+using System.Text;
 
 namespace AirplaneProject.Interactors
 {
@@ -31,41 +32,46 @@ namespace AirplaneProject.Interactors
             return _flightDb.GetUpcomingFlightsAsync();
         }
 
-
         /// <summary>
         /// Получить список незанятых мест на рейсе
         /// </summary>
-        public async Task<Result<List<int>>> GetEmptySeatNumbers(Guid flightId)
+        public IEnumerable<int> GetEmptySeatNumbers(Flight flight)
         {
-            var flightResult = await GetAsync(flightId);
-            if (flightResult.IsFailed)
-                return Result.Fail("Не удалось найти рейс");
-
-            var totalSeatCount = flightResult.Value.SeatingCapacity;
+            var totalSeatCount = flight.SeatingCapacity;
 
             var seatNumbers = Enumerable.Range(1, totalSeatCount).ToList();
-            foreach (var order in flightResult.Value.Orders)
+            foreach (var order in flight.Orders)
             {
                 if (order.IsActive)
                     foreach (var seat in order.SeatReserves)
                         seatNumbers.Remove(seat.SeatNumber);
             }
 
-            return Result.Ok(seatNumbers);
+            return seatNumbers;
         }
 
         /// <summary>
-        /// Проверка, что указанное место на рейс еще не занято
+        /// Проверка, что указанные места на рейс еще не заняты
         /// </summary>
-        public async Task<Result<bool>> IsSeatEmptyAsync(Guid flightId, int seatNumber)
+        public Result IsSeatsEmpty(Flight flight, IEnumerable<int> seatNumbers)
         {
-            var emptySeatsResult = await GetEmptySeatNumbers(flightId);
-            if (emptySeatsResult.IsFailed)
-                return Result.Fail(emptySeatsResult.Errors[0]);
+            var emptySeatsResult = GetEmptySeatNumbers(flight);
             
-            var isSeatEmpty = emptySeatsResult.Value.Contains(seatNumber);
+            var notEmptySeats = seatNumbers.Except(emptySeatsResult); ;
 
-            return Result.Ok(isSeatEmpty);
+            if (notEmptySeats.Count() == 0)
+                return Result.Ok();
+
+
+            var errorMessage = new StringBuilder();
+
+            errorMessage.Append("Эти места уже зарезервированы ранее: ");
+            foreach (var seat in notEmptySeats)
+            {
+                errorMessage.Append($"{notEmptySeats} ");
+            }
+            errorMessage.AppendLine("/r/n Замените их на другие и попробуйте снова");
+            return Result.Fail(errorMessage.ToString());
         }
 
     }

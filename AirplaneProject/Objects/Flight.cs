@@ -1,4 +1,4 @@
-﻿namespace AiplaneProject.Objects
+﻿namespace AirplaneProject.Objects
 {
     /// <summary>
     /// Рейс

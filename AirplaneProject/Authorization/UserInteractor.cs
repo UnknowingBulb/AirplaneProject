@@ -1,4 +1,4 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
@@ -65,7 +65,7 @@ namespace AirplaneProject.Authorization
         /// <param name="user">Пользователь</param>
         public async Task<Result<User>> CreateUserAsync(User user)
         {
-            var validationResult = await IsUserValidForRegistrationAsync(user);
+            var validationResult = await ValidateUserForRegistrationAsync(user);
             if (validationResult.IsFailed)
             {
                 return validationResult;
@@ -83,28 +83,28 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        private async Task<Result> IsUserValidForRegistrationAsync(User user)
+        private async Task<Result> ValidateUserForRegistrationAsync(User user)
         {
-            var failResult = Result.Ok();
+            var result = Result.Ok();
             if (user == null)
-                return Result.Fail("Данные пусты");
+                return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");
 
             if (user.Login.IsNullOrEmpty())
-                failResult = Result.Merge(failResult, Result.Fail("Логин пуст, заполните поле"));
+                result = Result.Merge(result, Result.Fail("Логин пуст, заполните поле"));
 
             if (user.Password.IsNullOrEmpty())
-                failResult = Result.Merge(failResult, Result.Fail("Пароль пуст, заполните поле"));
+                result = Result.Merge(result, Result.Fail("Пароль пуст, заполните поле"));
 
             if (user.Name.IsNullOrEmpty())
-                failResult = Result.Merge(failResult, Result.Fail("ФИО пусто, заполните поле"));
+                result = Result.Merge(result, Result.Fail("ФИО пусто, заполните поле"));
 
             if (IsPhoneNumberValid(user.PhoneNumber))
-                failResult = Result.Merge(failResult, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
+                result = Result.Merge(result, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
 
             if (await _userDb.IsAnyWithSameLoginAsync(user.Login))
-                failResult = Result.Merge(failResult, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
+                result = Result.Merge(result, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
-            return failResult;
+            return result;
         }
 
         /// <summary>

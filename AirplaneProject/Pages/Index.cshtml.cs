@@ -1,4 +1,4 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Mvc;

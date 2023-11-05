@@ -1,4 +1,4 @@
-﻿using AiplaneProject.Objects;
+﻿using AirplaneProject.Objects;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
@@ -11,9 +11,11 @@ namespace AirplaneProject.Interactors
     public class OrderInteractor
     {
         private readonly OrderDb _orderDb;
+        private readonly FlightInteractor _flightInteractor;
         public OrderInteractor(ApplicationDbContext dbContext)
         {
             _orderDb = new OrderDb(dbContext);
+            _flightInteractor = new FlightInteractor(dbContext);
         }
 
         /// <summary>
@@ -21,9 +23,10 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public async Task<Result> CreateAsync(Order order)
         {
-            var isOrderValid = ValidateOrder(order);
+            var isOrderValid = await ValidateOrderAsync(order);
             if (isOrderValid.IsFailed)
                 return isOrderValid;
+
             await _orderDb.SaveAsync(order);
             return Result.Ok();
         }
@@ -33,7 +36,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public Task SetNotActiveAsync(Order order)
         {
-            ValidateOrder(order);
+            ValidateOrderAsync(order);
             //TODO: check smth
             order.IsActive = false;
             return _orderDb.SaveAsync(order);
@@ -91,9 +94,25 @@ namespace AirplaneProject.Interactors
             return Result.Ok(orders);
         }
 
-        private Result ValidateOrder(Order order)
+        private async Task<Result> ValidateOrderAsync(Order order)
         {
-            return Result.Ok();
+            var result = Result.Ok();
+            if (order == null)
+                return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");
+
+            if (order.Flight.DepartureDateTime < DateTime.UtcNow)
+                return Result.Fail("Время отправки рейса уже прошло. Выберите другой рейс");
+
+            if (order.SeatReserves.IsNullOrEmpty())
+                result = Result.Merge(result, Result.Fail("Пуста информация по местам. Заполните и попробуйте снова"));
+            
+            var orderSeatNumbers = order.SeatReserves.Select(sr => sr.SeatNumber);
+            var isSeatsEmptyResult = _flightInteractor.IsSeatsEmpty(order.Flight, orderSeatNumbers);
+            if (isSeatsEmptyResult.IsFailed)
+                result = Result.Merge(result, isSeatsEmptyResult);
+
+            return result;
         }
+
     }
 }
