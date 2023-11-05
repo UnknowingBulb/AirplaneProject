@@ -20,21 +20,21 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Список ближайших полетов
         /// </summary>
-        public IList<Flight> Flights { get; set; }
+        public List<Flight> Flights { get; set; }
         /// <summary>
         /// Список заказов текущего пользователя
         /// </summary>
-        public IList<Order> ActiveUserOrders { get; set; }
+        public List<Order> ActiveUserOrders { get; set; }
 
         public async Task OnGetAsync()
         {
-            Flights = await _flightInteractor.GetUpcomingFlights().Take(20).ToListAsync();
+            Flights = (await _flightInteractor.GetUpcomingFlightsAsync()).Take(20).ToList();
             if(ActiveUser != null)
             {
-                var userOrders = _orderInteractor.GetOrdersByUser(ActiveUser.Id);
+                var userOrders = await _orderInteractor.GetOrdersByUserAsync(ActiveUser.Id);
                 if (userOrders.IsSuccess && !userOrders.Value.IsNullOrEmpty())
                 {
-                    ActiveUserOrders = await userOrders.Value.ToListAsync();
+                    ActiveUserOrders = userOrders.Value;
                 }
             }
         }

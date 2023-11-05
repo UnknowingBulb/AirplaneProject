@@ -1,4 +1,5 @@
 ﻿using AiplaneProject.Objects;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database.DbData
 {
@@ -16,9 +17,11 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public IQueryable<Flight> GetUpcomingFlights()
+        public async Task<List<Flight>> GetUpcomingFlightsAsync()
         {
-            return _dbContext.Flight.Where(f => f.DepartureDateTime >= DateTime.UtcNow).OrderBy(f => f.DepartureDateTime);
+            return await _dbContext.Flight.Where(f => f.DepartureDateTime >= DateTime.UtcNow)
+                .OrderBy(f => f.DepartureDateTime)
+                .ToListAsync();
         }
     }
 }

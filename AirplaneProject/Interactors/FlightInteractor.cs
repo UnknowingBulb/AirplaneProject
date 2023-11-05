@@ -1,6 +1,7 @@
 ﻿using AiplaneProject.Objects;
 using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Interactors
 {
@@ -15,9 +16,9 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public IQueryable<Flight> GetUpcomingFlights()
+        public Task<List<Flight>> GetUpcomingFlightsAsync()
         {
-            return _flightDb.GetUpcomingFlights();
+            return _flightDb.GetUpcomingFlightsAsync();
         }
     }
 }

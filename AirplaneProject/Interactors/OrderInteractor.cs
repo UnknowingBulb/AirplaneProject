@@ -19,16 +19,19 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Создать заказ
         /// </summary>
-        public Task Create(Order order)
+        public async Task<Result> CreateAsync(Order order)
         {
-            ValidateOrder(order);
-            return _orderDb.SaveAsync(order);
+            var isOrderValid = ValidateOrder(order);
+            if (isOrderValid.IsFailed)
+                return isOrderValid;
+            await _orderDb.SaveAsync(order);
+            return Result.Ok();
         }
 
         /// <summary>
         /// Установить, что заказ неактивен
         /// </summary>
-        public Task SetNotActive(Order order)
+        public Task SetNotActiveAsync(Order order)
         {
             ValidateOrder(order);
             //TODO: check smth
@@ -39,7 +42,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<Order>> GetOrder(Guid id) 
+        public async Task<Result<Order>> GetOrderAsync(Guid id) 
         {
             var order = await _orderDb.GetOrderAsync(id);
             if (order == null)
@@ -52,9 +55,9 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь
         /// </summary>
-        public Result<IQueryable<Order>> GetOrdersByUser(Guid userId)
+        public async Task<Result<List<Order>>> GetOrdersByUserAsync(Guid userId)
         {
-            var orders = _orderDb.GetOrdersByUser(userId);
+            var orders = await _orderDb.GetOrdersByUserAsync(userId);
             if (orders.IsNullOrEmpty())
             {
                 return Result.Fail("Не удалось найти заказы");
@@ -65,9 +68,9 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы по номеру телефона пользователя
         /// </summary>
-        public Result<IQueryable<Order>> GetOrdersByPhone(string phoneNumber)
+        public async Task<Result<List<Order>>> GetOrdersByPhoneAsync(string phoneNumber)
         {
-            var orders = _orderDb.GetOrdersByUserPhone(phoneNumber);
+            var orders = await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber);
             if (orders.IsNullOrEmpty())
             {
                 return Result.Fail("Не удалось найти заказы");
