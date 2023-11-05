@@ -1,45 +1,68 @@
 ﻿using AiplaneProject.Objects;
+using AirplaneProject.Database;
+using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AirplaneProject.Interactors
 {
     [Authorize]
     public class OrderInteractor
-    {/*
-        private readonly OrderDbContext _OrderDbContext;
-        public OrderInteractor(OrderDbContext OrderDbContext)
+    {
+        private readonly OrderDb _orderDb;
+        public OrderInteractor(ApplicationDbContext dbContext)
         {
-            _OrderDbContext = OrderDbContext;
+            _orderDb = new OrderDb(dbContext);
         }
 
         public Task Create(Order order)
         {
-            _OrderDbContext.Order.Add(order);
-            return _OrderDbContext.SaveChangesAsync();
+            ValidateOrder(order);
+            return _orderDb.Save(order);
         }
 
-        public Task Delete(Guid orderId)
+        public Task SetNotActive(Order order)
         {
-            var order = new Order() { Id = orderId };
-            _OrderDbContext.Order.Remove(order);
-            return _OrderDbContext.SaveChangesAsync();
-        }
-        public Order GetOrder(Guid id) 
-        {
+            ValidateOrder(order);
+            //TODO: check smth
+            order.IsActive = false;
+            return _orderDb.Save(order);
         }
 
-        public Order GetOrdersByPhone(string phoneNumber)
+        public async Task<Result<Order>> GetOrder(Guid id) 
         {
+            var order = await _orderDb.GetOrder(id);
+            if (order == null)
+            {
+                return Result.Fail("Не удалось найти заказ");
+            }
+            return order;
         }
 
-        public Order GetOrdersByUser(Guid id)
+        public Result<IQueryable<Order>> GetOrdersByPhone(string phoneNumber)
         {
+            var orders = _orderDb.GetOrdersByUserPhone(phoneNumber);
+            if (orders.IsNullOrEmpty())
+            {
+                return Result.Fail("Не удалось найти заказы");
+            }
+            return Result.Ok(orders);
+        }
+
+        public Result<IQueryable<Order>> GetOrdersByUser(Guid userId)
+        {
+            var orders = _orderDb.GetOrdersByUser(userId);
+            if (orders.IsNullOrEmpty())
+            {
+                return Result.Fail("Не удалось найти заказы");
+            }
+            return Result.Ok(orders);
         }
 
         private Result ValidateOrder(Order order)
         {
             return Result.Ok();
-        }*/
+        }
     }
 }

@@ -11,12 +11,12 @@ namespace AirplaneProject.Database.DbData
             _dbContext = dbContext;
         }
 
-        public Task<User?> Get(Guid id)
+        public ValueTask<User?> Get(Guid id)
         {
-            return _dbContext.User.FirstOrDefaultAsync(user => user.Id == id);
+            return _dbContext.User.FindAsync(id);
         }
 
-        public Task<User?> Get(string id)
+        public ValueTask<User?> Get(string id)
         {
             return Get(new Guid(id));
         }

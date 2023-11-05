@@ -22,6 +22,10 @@
         /// </summary>
         public int Price { get; set; }
         /// <summary>
+        /// Активен ли заказ (не отменен)
+        /// </summary>
+        public bool IsActive { get; set; }
+        /// <summary>
         /// Пользователь-автор заказа
         /// </summary>
         public User User { get; set; }
