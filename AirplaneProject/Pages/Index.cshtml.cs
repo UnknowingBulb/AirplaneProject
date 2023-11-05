@@ -39,11 +39,11 @@ namespace AirplaneProject.Pages
             }
         }
 
-        public async Task<IActionResult> OnPostBuyAsync(int id)
+        public async Task<IActionResult> OnPostBuyAsync(Guid flightId)
         {
             //TODO: заполнить переходом к странице покупки
 
-            return RedirectToPage();
+            return RedirectToPage("TicketAcquire", new {FlightId = flightId });
         }
     }
 }

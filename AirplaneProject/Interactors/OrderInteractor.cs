@@ -42,9 +42,9 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<Order>> GetOrderAsync(Guid id) 
+        public async Task<Result<Order>> GetAsync(Guid id) 
         {
-            var order = await _orderDb.GetOrderAsync(id);
+            var order = await _orderDb.GetAsync(id);
             if (order == null)
             {
                 return Result.Fail("Не удалось найти заказ");
@@ -58,6 +58,19 @@ namespace AirplaneProject.Interactors
         public async Task<Result<List<Order>>> GetOrdersByUserAsync(Guid userId)
         {
             var orders = await _orderDb.GetOrdersByUserAsync(userId);
+            if (orders.IsNullOrEmpty())
+            {
+                return Result.Fail("Не удалось найти заказы");
+            }
+            return Result.Ok(orders);
+        }
+
+        /// <summary>
+        /// Получить заказы, которые сделал пользователь по полному/частичному совпадению ФИО
+        /// </summary>
+        public async Task<Result<List<Order>>> GetOrdersByUserNameAsync(string userName)
+        {
+            var orders = await _orderDb.GetOrdersByUserNameAsync(userName);
             if (orders.IsNullOrEmpty())
             {
                 return Result.Fail("Не удалось найти заказы");

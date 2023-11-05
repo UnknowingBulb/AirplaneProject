@@ -15,6 +15,14 @@ namespace AirplaneProject.Database.DbData
         }
 
         /// <summary>
+        /// Получить рейс
+        /// </summary>
+        public ValueTask<Flight?> GetAsync(Guid id)
+        {
+            return _dbContext.Flight.FindAsync(id);
+        }
+
+        /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
         public async Task<List<Flight>> GetUpcomingFlightsAsync()

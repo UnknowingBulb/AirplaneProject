@@ -26,7 +26,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public ValueTask<Order?> GetOrderAsync(Guid id)
+        public ValueTask<Order?> GetAsync(Guid id)
         {
             return _dbContext.Order.FindAsync(id);
         }
@@ -37,6 +37,14 @@ namespace AirplaneProject.Database.DbData
         public Task<List<Order>> GetOrdersByUserAsync(Guid userId)
         {
             return _dbContext.Order.Where(order => order.UserId == userId).ToListAsync();
+        }
+
+        /// <summary>
+        /// Получить список заказов пользователя по полному/частичному совпадению в ФИО
+        /// </summary>
+        public Task<List<Order>> GetOrdersByUserNameAsync(string name)
+        {
+            return _dbContext.Order.Where(order => order.User.Name.Contains(name)).ToListAsync();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirplaneProject.Pages
 {
@@ -21,6 +22,7 @@ namespace AirplaneProject.Pages
         [BindProperty]
         public string? AuthLogin { get; set; }
         [BindProperty]
+        [DataType(DataType.Password)]
         public string? AuthPassword { get; set; }
 
         /// <summary>

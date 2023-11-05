@@ -11,6 +11,7 @@ builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<UserInteractor>();
 builder.Services.AddScoped<FlightInteractor>();
 builder.Services.AddScoped<OrderInteractor>();
+builder.Services.AddScoped<PassengerInteractor>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
