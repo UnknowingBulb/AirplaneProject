@@ -14,9 +14,9 @@
         /// </summary>
         public Guid UserId { get; set; }
         /// <summary>
-        /// Пользователь-автор
+        /// Данные автора пассажира
         /// </summary>
-        public User User { get; set; }
+        public virtual User User { get; set; }
         /// <summary>
         /// ФИО пассажира
         /// </summary>

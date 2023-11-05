@@ -25,7 +25,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
-        public Task<List<Passenger>> GetUserPassengers(Guid userId)
+        public Task<List<Passenger>> GetUserPassengersAsync(Guid userId)
         {
             return _dbContext.Passenger.Where(passenger =>  passenger.UserId == userId).ToListAsync();
         }

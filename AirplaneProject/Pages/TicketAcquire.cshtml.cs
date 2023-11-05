@@ -4,6 +4,7 @@ using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using AirplaneProject.Errors;
 
 namespace AirplaneProject.Pages
 {
@@ -13,7 +14,7 @@ namespace AirplaneProject.Pages
         private readonly FlightInteractor _flightInteractor;
         private readonly OrderInteractor _orderInteractor;
         private readonly PassengerInteractor _passengerInteractor;
-        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, PassengerInteractor passengerInteractor, UserInteractor authorizationInteractor) : base(authorizationInteractor)
+        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, PassengerInteractor passengerInteractor, UserInteractor userInteractor) : base(userInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;
@@ -48,6 +49,7 @@ namespace AirplaneProject.Pages
         [BindProperty]
         public List<SeatReserve> SeatReserves { get; set; } = new List<SeatReserve>();
 
+        //TODO: добавить везде в асинк cancellation
         public async Task OnGetAsync(Guid flightId)
         {
             var flightResult = await _flightInteractor.GetAsync(flightId);
@@ -67,56 +69,88 @@ namespace AirplaneProject.Pages
             }
 
             EmptySeatNumbers = emptySeatsResult.ToList();
-
-            UserPassengers = await _passengerInteractor.GetUserPassengers(ActiveUser.Id);
         }
 
         public async Task OnPostAddTicketAsync(Guid flightId)
         {
             await OnGetAsync(flightId);
+
             if (!Error.IsNullOrEmpty())
                 return;
 
-            var seatReserve = new SeatReserve();
             if (UserPassengers.IsNullOrEmpty())
             {
-                seatReserve.Passenger = new Passenger
+                UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
+                var newEmptyPassenger = new Passenger
                 {
-                    Id = Guid.NewGuid(),
-                    Name = ActiveUser.Name,
+                    Id = Guid.Empty,
+                    Name = ActiveUser!.Name,
                     PassportData = string.Empty,
                     UserId = ActiveUser.Id,
                 };
-            }
-            else
-            {
-                seatReserve.Passenger = UserPassengers[0];
+                UserPassengers.Insert(0, newEmptyPassenger);
             }
 
-            seatReserve.SeatNumber = EmptySeatNumbers.First();
+            var seatReserve = new SeatReserve()
+            {
+                Id = Guid.NewGuid(),
+                SeatNumber = EmptySeatNumbers.First(),
+                Passenger = UserPassengers[0],
+                PassengerId = UserPassengers[0].Id
+            };
 
             SeatReserves.Add(seatReserve);
         }
 
-        public async Task OnPostCompleteOrderAsync(Guid flightId)
+        public async Task OnPostChangePassengerAsync(Guid flightId)
         {
+            //Просто инициируем обновление страницы, ничего такого
             await OnGetAsync(flightId);
+
+            if (!Error.IsNullOrEmpty())
+                return;
+
+            if (UserPassengers.IsNullOrEmpty())
+            {
+                UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
+                var newEmptyPassenger = new Passenger
+                {
+                    Id = Guid.Empty,
+                    Name = ActiveUser!.Name,
+                    PassportData = string.Empty,
+                    UserId = ActiveUser.Id,
+                };
+                UserPassengers.Insert(0, newEmptyPassenger);
+            }
+        }
+
+        public async Task<IActionResult> OnPostCompleteOrderAsync(Guid flightId)
+        {
+            var flight = await _flightInteractor.GetAsync(flightId);
+            if (flight.IsFailed)
+            {
+                Error = $"Ошибка оформления заказа: {flight.GetResultErrorMessages()}";
+                return Page();
+            }
+
             var order = new Order()
             {
                 Id = Guid.NewGuid(),
-                Flight = Flight,
-                UserId = ActiveUser.Id,
-                Price =Flight.Price * SeatReserves.Count,
+                Flight = flight.Value,
+                UserId = ActiveUser!.Id,
+                Price = flight.Value.Price * SeatReserves.Count,
                 SeatReserves = SeatReserves,
                 IsActive = true
 
             };
+
             var orderResult = await _orderInteractor.CreateAsync(order);
             if (orderResult.IsFailed)
             {
-                Error = $"Ошибка оформления заказа: {orderResult.Errors[0].Message}";
-                return;
+                Error = $"Ошибка оформления заказа: {orderResult.GetResultErrorMessages()}";
+                return Page();
             }
+            return RedirectToPage("./Index");
         }
     }
 

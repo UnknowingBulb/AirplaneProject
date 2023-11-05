@@ -23,7 +23,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public async Task<Result> CreateAsync(Order order)
         {
-            var isOrderValid = await ValidateOrderAsync(order);
+            var isOrderValid = ValidateOrderAsync(order);
             if (isOrderValid.IsFailed)
                 return isOrderValid;
 
@@ -36,8 +36,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public Task SetNotActiveAsync(Order order)
         {
-            ValidateOrderAsync(order);
-            //TODO: check smth
+            ValidateOrderToChange(order);
             order.IsActive = false;
             return _orderDb.SaveAsync(order);
         }
@@ -45,7 +44,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<Order>> GetAsync(Guid id) 
+        public async Task<Result<Order>> GetAsync(Guid id)
         {
             var order = await _orderDb.GetAsync(id);
             if (order == null)
@@ -94,18 +93,15 @@ namespace AirplaneProject.Interactors
             return Result.Ok(orders);
         }
 
-        private async Task<Result> ValidateOrderAsync(Order order)
+        private Result ValidateOrderAsync(Order order)
         {
-            var result = Result.Ok();
-            if (order == null)
-                return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");
-
-            if (order.Flight.DepartureDateTime < DateTime.UtcNow)
-                return Result.Fail("Время отправки рейса уже прошло. Выберите другой рейс");
+            var result = ValidateOrderToChange(order);
+            if (result.IsFailed)
+                return result;
 
             if (order.SeatReserves.IsNullOrEmpty())
                 result = Result.Merge(result, Result.Fail("Пуста информация по местам. Заполните и попробуйте снова"));
-            
+
             var orderSeatNumbers = order.SeatReserves.Select(sr => sr.SeatNumber);
             var isSeatsEmptyResult = _flightInteractor.IsSeatsEmpty(order.Flight, orderSeatNumbers);
             if (isSeatsEmptyResult.IsFailed)
@@ -114,5 +110,15 @@ namespace AirplaneProject.Interactors
             return result;
         }
 
+        private Result ValidateOrderToChange(Order order)
+        {
+            if (order == null)
+                return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");
+
+            if (order.Flight.DepartureDateTime < DateTime.UtcNow)
+                return Result.Fail("Время отправки рейса уже прошло. Выберите другой рейс");
+            
+            return Result.Ok();
+        }
     }
 }

@@ -32,6 +32,6 @@
         /// <summary>
         /// Заказы на данный рейс
         /// </summary>
-        public List<Order> Orders { get; set; } = new();
+        public virtual List<Order> Orders { get; set; } = new();
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AirplaneProject.Objects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Xml;
 
 namespace AirplaneProject.Database.DbData
 {
@@ -17,10 +19,29 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить заказ
         /// </summary>
-        public Task SaveAsync(Order order)
+        public async Task SaveAsync(Order order)
         {
-            _dbContext.Order.Add(order);
-            return _dbContext.SaveChangesAsync();
+            // Этот черт может пытаться добавить пассажира, даже если он уже существует
+            // Поэтому действуем на опережение и говорим ему, что такие пассажиры могут быть сохранены
+            foreach (var seatReserve in order.SeatReserves)
+            {
+                if (_dbContext.Passenger.Any(p => p.Id == seatReserve.Passenger.Id))
+                {
+                    _dbContext.Attach(seatReserve.Passenger);
+                   // _dbContext.Passenger.Ob.ChangeObjectState(myEntity, EntityState.Modified);
+                }
+                else
+                {
+                    if(seatReserve.Passenger.Name.IsNullOrEmpty())
+                    {
+                        continue;
+                    }
+                    _dbContext.Add(seatReserve.Passenger);
+                }
+            }
+            await _dbContext.Order.AddAsync(order);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>

@@ -14,6 +14,9 @@ namespace AirplaneProject.Interactors
             _flightDb = new FlightDb(dbContext);
         }
 
+        /// <summary>
+        /// Получить рейс с заполненным Orders
+        /// </summary>
         public async Task<Result<Flight>> GetAsync(Guid flightId)
         {
             var flight = await _flightDb.GetAsync(flightId);
@@ -57,7 +60,7 @@ namespace AirplaneProject.Interactors
         {
             var emptySeatsResult = GetEmptySeatNumbers(flight);
             
-            var notEmptySeats = seatNumbers.Except(emptySeatsResult); ;
+            var notEmptySeats = seatNumbers.Except(emptySeatsResult);
 
             if (notEmptySeats.Count() == 0)
                 return Result.Ok();

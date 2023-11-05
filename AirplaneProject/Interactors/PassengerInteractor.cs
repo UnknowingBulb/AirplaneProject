@@ -17,9 +17,9 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
-        public Task<List<Passenger>> GetUserPassengers(Guid userId)
+        public Task<List<Passenger>> GetUserPassengersAsync(Guid userId)
         {
-            return _passengerDb.GetUserPassengers(userId);
+            return _passengerDb.GetUserPassengersAsync(userId);
         }
 
         /// <summary>

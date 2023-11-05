@@ -17,5 +17,18 @@ namespace AirplaneProject.Errors
             }
             return errorMessages.ToString();
         }
+
+        /// <summary>
+        /// Получить строку со всеми ошибками из результата
+        /// </summary>
+        public static string GetResultErrorMessages(this Result result)
+        {
+            var errorMessages = new StringBuilder();
+            foreach (var error in result.Errors)
+            {
+                errorMessages.AppendLine(error.Message);
+            }
+            return errorMessages.ToString();
+        }
     }
 }

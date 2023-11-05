@@ -20,7 +20,7 @@
         /// <summary>
         /// Инфо о пассажире
         /// </summary>
-        public Passenger Passenger { get; set; }
+        public virtual Passenger Passenger { get; set; }
         /// <summary>
         /// Номер занятого места
         /// </summary>

@@ -20,7 +20,7 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public User? User { get; set; }
+        public User? CreatedUser { get; set; }
 
         /// <summary>
         /// Регистрация
@@ -28,7 +28,7 @@ namespace AirplaneProject.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostRegistrationAsync()
         {
-            var userResult = await _userInteractor.CreateUserAsync(User!);
+            var userResult = await _userInteractor.CreateUserAsync(CreatedUser!);
 
             if (userResult.IsFailed)
             {

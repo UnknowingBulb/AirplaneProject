@@ -15,11 +15,14 @@ namespace AirplaneProject.Database.DbData
         }
 
         /// <summary>
-        /// Получить рейс
+        /// Получить рейс с заполненным Orders
         /// </summary>
-        public ValueTask<Flight?> GetAsync(Guid id)
+        public Task<Flight?> GetAsync(Guid id)
         {
-            return _dbContext.Flight.FindAsync(id);
+            return _dbContext.Flight
+                .Include(f => f.Orders)
+                .ThenInclude(o => o.SeatReserves)
+                .FirstOrDefaultAsync(f => f.Id == id);
         }
 
         /// <summary>
