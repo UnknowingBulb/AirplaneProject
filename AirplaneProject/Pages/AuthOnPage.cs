@@ -3,7 +3,6 @@ using AiplaneProject.Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 
 namespace AirplaneProject.Pages

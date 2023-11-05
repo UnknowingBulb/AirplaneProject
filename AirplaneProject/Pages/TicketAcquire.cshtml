@@ -3,8 +3,25 @@
 
 <h3>Купить билет</h3>
 
-<div>
-    <h4>Рейс:</h4>
-    <div>@Model.Flight.DepartureLocation - @Model.Flight.DestinationLocation</div>
-    <div>Отправление в @Model.Flight.DepartureDateTime (UTC)</div>
-</div>
+@if (@Model.Error == TicketAcquireErrors.FlightInfoError)
+{
+    <div class="error-text">@Model.Error</div>
+}
+else
+{
+    <div>
+        <h4>Рейс:</h4>
+        <div>@Model.Flight.DepartureLocation - @Model.Flight.DestinationLocation</div>
+        <div>Отправление в @Model.Flight.DepartureDateTime (UTC)</div>
+    </div>
+    <div>
+        @if (@Model.Error == TicketAcquireErrors.SeatsInfoError || @Model.Error == TicketAcquireErrors.NoSeatsError)
+        {
+            <div class="error-text">@Model.Error</div>
+        }
+        else
+        {
+            <button type="submit" asp-page-handler="AddTicket">Добавить билет</button>
+        }
+    </div>
+}

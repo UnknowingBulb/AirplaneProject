@@ -42,6 +42,9 @@ namespace AirplaneProject.Interactors
                 return Result.Fail("Не удалось найти рейс");
 
             var totalSeatCount = flightResult.Value.SeatingCapacity;
+            if (totalSeatCount == 0)
+                return Result.Ok(new List<int>());
+
             var seatNumbers = Enumerable.Range(1, totalSeatCount + 1).ToList();
             foreach (var order in flightResult.Value.Orders)
             {
