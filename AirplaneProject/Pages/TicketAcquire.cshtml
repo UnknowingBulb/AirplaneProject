@@ -1,4 +1,10 @@
 ﻿@page
 @model AirplaneProject.Pages.TicketAcquireModel
-@{
-}
+
+<h3>Купить билет</h3>
+
+<div>
+    <h4>Рейс:</h4>
+    <div>@Model.Flight.DepartureLocation - @Model.Flight.DestinationLocation</div>
+    <div>Отправление в @Model.Flight.DepartureDateTime (UTC)</div>
+</div>

@@ -2,7 +2,6 @@ using AiplaneProject.Objects;
 using AirplaneProject.Authorization;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace AirplaneProject.Pages
 {
@@ -11,10 +10,12 @@ namespace AirplaneProject.Pages
     {
         private readonly FlightInteractor _flightInteractor;
         private readonly OrderInteractor _orderInteractor;
-        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, UserInteractor authorizationInteractor) : base(authorizationInteractor)
+        private readonly PassengerInteractor _passengerInteractor;
+        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, PassengerInteractor passengerInteractor, UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;
+            _passengerInteractor = passengerInteractor;
         }
 
         /// <summary>
@@ -22,8 +23,21 @@ namespace AirplaneProject.Pages
         /// </summary>
         public Flight Flight { get; set; }
 
-        public void OnGet()
+        /// <summary>
+        /// Пассажиры, созданные пользователем
+        /// </summary>
+        public List<Passenger> UserPassengers { get; set; }
+
+        public async Task OnGet(Guid flightId)
         {
+            var flightResult = await _flightInteractor.GetAsync(flightId);
+            if (flightResult.IsFailed)
+            {
+                //TODO: показать ошибку
+            }
+            Flight = flightResult.Value;
+
+            UserPassengers = await _passengerInteractor.GetUserPassengers(ActiveUser.Id);
         }
     }
 }
