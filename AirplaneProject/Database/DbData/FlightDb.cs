@@ -17,7 +17,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить рейс с заполненным Orders
         /// </summary>
-        public Task<FlightModel?> GetAsync(Guid id)
+        public Task<Flight?> GetAsync(Guid id)
         {
             return _dbContext.Flight
                 .Include(f => f.Orders)
@@ -28,7 +28,7 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public async Task<List<FlightModel>> GetUpcomingFlightsAsync()
+        public async Task<List<Flight>> GetUpcomingFlightsAsync()
         {
             return await _dbContext.Flight.Where(f => f.DepartureDateTime >= DateTime.UtcNow)
                 .OrderBy(f => f.DepartureDateTime)

@@ -1,20 +1,20 @@
 using AirplaneProject.Objects;
-using AirplaneProject.Authorization;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Errors;
+using AirplaneProject.Database.DbData;
 
 namespace AirplaneProject.Pages
 {
     [Authorize]
     public class TicketAcquireModel : AuthOnPage
     {
-        private readonly FlightInteractor _flightInteractor;
-        private readonly OrderInteractor _orderInteractor;
-        private readonly PassengerInteractor _passengerInteractor;
-        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, PassengerInteractor passengerInteractor, UserInteractor userInteractor) : base(userInteractor)
+        private readonly Interactors.Flight _flightInteractor;
+        private readonly Interactors.Order _orderInteractor;
+        private readonly Interactors.Passenger _passengerInteractor;
+        public TicketAcquireModel(Interactors.Flight flightInteractor, Interactors.Order orderInteractor, Interactors.Passenger passengerInteractor, Interactors.User userInteractor) : base(userInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;
@@ -25,13 +25,13 @@ namespace AirplaneProject.Pages
         /// Рейс, на который оформляем билет
         /// </summary>
         [BindProperty]
-        public FlightModel Flight { get; set; }
+        public Objects.Flight Flight { get; set; }
 
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
         [BindProperty]
-        public List<PassengerModel> UserPassengers { get; set; }
+        public List<Objects.Passenger> UserPassengers { get; set; } = new List<Objects.Passenger>();
 
         /// <summary>
         /// Ошибки открытия страницы
@@ -47,7 +47,7 @@ namespace AirplaneProject.Pages
         /// Список билетов, которые берем на рейс
         /// </summary>
         [BindProperty]
-        public List<SeatReserveModel> SeatReserves { get; set; } = new List<SeatReserveModel>();
+        public List<SeatReserve> SeatReserves { get; set; } = new List<SeatReserve>();
 
         //TODO: добавить везде в асинк cancellation
         public async Task OnGetAsync(Guid flightId)
@@ -81,25 +81,27 @@ namespace AirplaneProject.Pages
             if (UserPassengers.IsNullOrEmpty())
             {
                 UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
-                var newEmptyPassenger = new PassengerModel
+                var newEmptyPassenger = new Objects.Passenger
                 {
                     Id = Guid.Empty,
                     Name = ActiveUser!.Name,
                     PassportData = string.Empty,
                     UserId = ActiveUser.Id,
                 };
+                await _passengerInteractor.CreateAsync(newEmptyPassenger);
                 UserPassengers.Insert(0, newEmptyPassenger);
             }
 
-            var seatReserve = new SeatReserveModel()
+            var seatReserve = new SeatReserve()
             {
                 Id = Guid.NewGuid(),
                 SeatNumber = EmptySeatNumbers.First(),
-                Passenger = UserPassengers[0],
                 PassengerId = UserPassengers[0].Id
             };
 
             SeatReserves.Add(seatReserve);
+
+            await _orderInteractor.CreateSeatReserveAsync(SeatReserves);
         }
 
         public async Task OnPostChangePassengerAsync(Guid flightId)
@@ -113,15 +115,17 @@ namespace AirplaneProject.Pages
             if (UserPassengers.IsNullOrEmpty())
             {
                 UserPassengers = await _passengerInteractor.GetUserPassengersAsync(ActiveUser!.Id);
-                var newEmptyPassenger = new PassengerModel
+                var newEmptyPassenger = new Objects.Passenger
                 {
                     Id = Guid.Empty,
                     Name = ActiveUser!.Name,
                     PassportData = string.Empty,
                     UserId = ActiveUser.Id,
                 };
+                await _passengerInteractor.CreateAsync(newEmptyPassenger);
                 UserPassengers.Insert(0, newEmptyPassenger);
             }
+            await _orderInteractor.CreateSeatReserveAsync(SeatReserves);
         }
 
         public async Task<IActionResult> OnPostCompleteOrderAsync(Guid flightId)
@@ -133,7 +137,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var order = new OrderModel()
+            var order = new Objects.Order()
             {
                 Id = Guid.NewGuid(),
                 Flight = flight.Value,

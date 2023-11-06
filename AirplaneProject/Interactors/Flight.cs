@@ -6,10 +6,10 @@ using System.Text;
 
 namespace AirplaneProject.Interactors
 {
-    public class FlightInteractor
+    public class Flight
     {
         private readonly FlightDb _flightDb;
-        public FlightInteractor(ApplicationDbContext dbContext)
+        public Flight(ApplicationDbContext dbContext)
         {
             _flightDb = new FlightDb(dbContext);
         }
@@ -17,7 +17,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить рейс с заполненным Orders
         /// </summary>
-        public async Task<Result<FlightModel>> GetAsync(Guid flightId)
+        public async Task<Result<Objects.Flight>> GetAsync(Guid flightId)
         {
             var flight = await _flightDb.GetAsync(flightId);
             if (flight == null)
@@ -30,7 +30,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public Task<List<FlightModel>> GetUpcomingFlightsAsync()
+        public Task<List<Objects.Flight>> GetUpcomingFlightsAsync()
         {
             return _flightDb.GetUpcomingFlightsAsync();
         }
@@ -38,7 +38,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список незанятых мест на рейсе
         /// </summary>
-        public IEnumerable<int> GetEmptySeatNumbers(FlightModel flight)
+        public IEnumerable<int> GetEmptySeatNumbers(Objects.Flight flight)
         {
             var totalSeatCount = flight.SeatingCapacity;
 
@@ -56,7 +56,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Проверка, что указанные места на рейс еще не заняты
         /// </summary>
-        public Result IsSeatsEmpty(FlightModel flight, IEnumerable<int> seatNumbers)
+        public Result IsSeatsEmpty(Objects.Flight flight, IEnumerable<int> seatNumbers)
         {
             var emptySeatsResult = GetEmptySeatNumbers(flight);
             

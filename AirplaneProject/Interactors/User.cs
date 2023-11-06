@@ -3,22 +3,24 @@ using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.IdentityModel.Tokens;
+using AirplaneProject.Authorization;
 
-namespace AirplaneProject.Authorization
+namespace AirplaneProject.Interactors
 {
-    public class UserInteractor
+    public class User
     {
         private readonly UserDb _userDb;
-        public UserInteractor(ApplicationDbContext dbContext)
+        public User(ApplicationDbContext dbContext)
         {
             _userDb = new UserDb(dbContext);
+            //TODO: заменить всё в JwtToken на Интерфейс, чтобы отойти от завязки на него
         }
 
         /// <summary>
         /// Получить пользователя по токену авторизации
         /// </summary>
         /// <param name="authToken">Токен</param>
-        public async Task<Result<UserModel>> GetUserAsync(string? authToken)
+        public async Task<Result<Objects.User>> GetAsync(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
                 return Result.Fail("Не удалось получить пользователя");
@@ -43,7 +45,7 @@ namespace AirplaneProject.Authorization
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        public async Task<Result<UserModel>> GetUserAsync(string login, string password)
+        public async Task<Result<Objects.User>> GetAsync(string login, string password)
         {
             if (login == string.Empty)
                 return Result.Fail("Логин пуст, заполните поле");
@@ -63,7 +65,7 @@ namespace AirplaneProject.Authorization
         /// Создать пользователя с сохранением в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public async Task<Result<UserModel>> CreateUserAsync(UserModel user)
+        public async Task<Result<Objects.User>> CreateAndSaveAsync(Objects.User user)
         {
             var validationResult = await ValidateUserForRegistrationAsync(user);
             if (validationResult.IsFailed)
@@ -83,7 +85,7 @@ namespace AirplaneProject.Authorization
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        private async Task<Result> ValidateUserForRegistrationAsync(UserModel user)
+        private async Task<Result> ValidateUserForRegistrationAsync(Objects.User user)
         {
             var result = Result.Ok();
             if (user == null)

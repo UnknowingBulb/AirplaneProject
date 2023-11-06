@@ -3,7 +3,7 @@
     /// <summary>
     /// Рейс
     /// </summary>
-    public class FlightModel
+    public class Flight
     {
         /// <summary>
         /// Идентификатор рейса
@@ -32,6 +32,6 @@
         /// <summary>
         /// Заказы на данный рейс
         /// </summary>
-        public virtual List<OrderModel> Orders { get; set; } = new();
+        public virtual List<Order> Orders { get; set; } = new();
     }
 }

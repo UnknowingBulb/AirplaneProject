@@ -4,47 +4,48 @@ using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Interactors
 {
     [Authorize]
-    public class OrderInteractor
+    public class Order
     {
         private readonly OrderDb _orderDb;
-        private readonly FlightInteractor _flightInteractor;
-        public OrderInteractor(ApplicationDbContext dbContext)
+        private readonly Flight _flightInteractor;
+        public Order(ApplicationDbContext dbContext)
         {
             _orderDb = new OrderDb(dbContext);
-            _flightInteractor = new FlightInteractor(dbContext);
+            _flightInteractor = new Flight(dbContext);
         }
 
         /// <summary>
         /// Создать заказ
         /// </summary>
-        public async Task<Result> CreateAsync(OrderModel order)
+        public async Task<Result> CreateAsync(Objects.Order order)
         {
             var isOrderValid = ValidateOrderAsync(order);
             if (isOrderValid.IsFailed)
                 return isOrderValid;
 
-            await _orderDb.SaveAsync(order);
+            await _orderDb.CreateAndSaveAsync(order);
             return Result.Ok();
         }
 
         /// <summary>
         /// Установить, что заказ неактивен
         /// </summary>
-        public Task SetNotActiveAsync(OrderModel order)
+        public Task SetNotActiveAsync(Objects.Order order)
         {
             ValidateOrderToChange(order);
             order.IsActive = false;
-            return _orderDb.SaveAsync(order);
+            return _orderDb.CreateAndSaveAsync(order);
         }
 
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<OrderModel>> GetAsync(Guid id)
+        public async Task<Result<Objects.Order>> GetAsync(Guid id)
         {
             var order = await _orderDb.GetAsync(id);
             if (order == null)
@@ -57,7 +58,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь
         /// </summary>
-        public async Task<Result<List<OrderModel>>> GetOrdersByUserAsync(Guid userId)
+        public async Task<Result<List<Objects.Order>>> GetOrdersByUserAsync(Guid userId)
         {
             var orders = await _orderDb.GetOrdersByUserAsync(userId);
             if (orders.IsNullOrEmpty())
@@ -70,7 +71,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь по полному/частичному совпадению ФИО
         /// </summary>
-        public async Task<Result<List<OrderModel>>> GetOrdersByUserNameAsync(string userName)
+        public async Task<Result<List<Objects.Order>>> GetOrdersByUserNameAsync(string userName)
         {
             var orders = await _orderDb.GetOrdersByUserNameAsync(userName);
             if (orders.IsNullOrEmpty())
@@ -83,7 +84,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы по номеру телефона пользователя
         /// </summary>
-        public async Task<Result<List<OrderModel>>> GetOrdersByPhoneAsync(string phoneNumber)
+        public async Task<Result<List<Objects.Order>>> GetOrdersByPhoneAsync(string phoneNumber)
         {
             var orders = await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber);
             if (orders.IsNullOrEmpty())
@@ -93,7 +94,23 @@ namespace AirplaneProject.Interactors
             return Result.Ok(orders);
         }
 
-        private Result ValidateOrderAsync(OrderModel order)
+        /// <summary>
+        /// Создать резев места (отслеживать в БД)
+        /// </summary>
+        public Task CreateSeatReserveAsync(SeatReserve seatReserve)
+        {
+            return _orderDb.CreateSeatReserveAsync(seatReserve);
+        }
+
+        /// <summary>
+        /// Создать резев места (отслеживать в БД)
+        /// </summary>
+        public Task CreateSeatReserveAsync(List<SeatReserve> seatReserves)
+        {
+            return _orderDb.CreateSeatReserveAsync(seatReserves);
+        }
+
+        private Result ValidateOrderAsync(Objects.Order order)
         {
             var result = ValidateOrderToChange(order);
             if (result.IsFailed)
@@ -110,7 +127,7 @@ namespace AirplaneProject.Interactors
             return result;
         }
 
-        private Result ValidateOrderToChange(OrderModel order)
+        private Result ValidateOrderToChange(Objects.Order order)
         {
             if (order == null)
                 return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");

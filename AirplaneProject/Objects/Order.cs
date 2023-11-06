@@ -3,7 +3,7 @@
     /// <summary>
     /// Заказ
     /// </summary>
-    public class OrderModel
+    public class Order
     {
         /// <summary>
         /// Идентификатор заказа
@@ -28,15 +28,15 @@
         /// <summary>
         /// Пользователь-автор заказа
         /// </summary>
-        public virtual UserModel User { get; set; }
+        public virtual User User { get; set; }
         /// <summary>
         /// Информация о резерве мест в заказе
         /// </summary>
-        public virtual List<SeatReserveModel> SeatReserves { get; set; } = new();
+        public virtual List<SeatReserve> SeatReserves { get; set; } = new();
 
         /// <summary>
         /// Информация по рейсу, на который оформлен заказ
         /// </summary>
-        public virtual FlightModel Flight { get; set; }
+        public virtual Flight Flight { get; set; }
     }
 }

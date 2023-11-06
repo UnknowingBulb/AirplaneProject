@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
 using System.ComponentModel.DataAnnotations;
+using AirplaneProject.Interactors;
 
 namespace AirplaneProject.Pages
 {
     public abstract class AuthOnPage : PageModel
     {
-        private readonly UserInteractor _userInteractor;
+        private readonly Interactors.User _userInteractor;
         private string? _authToken;
-        private UserModel? _activeUser;
+        private Objects.User? _activeUser;
 
-        public AuthOnPage(UserInteractor userInteractor)
+        public AuthOnPage(Interactors.User userInteractor)
         {
             _userInteractor = userInteractor;
         }
@@ -49,7 +50,7 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Текущий пользователь
         /// </summary>
-        public UserModel? ActiveUser
+        public Objects.User? ActiveUser
         {
             get
             {
@@ -59,7 +60,7 @@ namespace AirplaneProject.Pages
                 }
                 if (_activeUser == null)
                 {
-                    var userResult = _userInteractor.GetUserAsync(_authToken).Result;
+                    var userResult = _userInteractor.GetAsync(_authToken).Result;
                     if (userResult.IsSuccess)
                     {
                         _activeUser = userResult.Value;
@@ -80,7 +81,7 @@ namespace AirplaneProject.Pages
                 return Page();
             }
 
-            var userResult = await _userInteractor.GetUserAsync(AuthLogin, AuthPassword);
+            var userResult = await _userInteractor.GetAsync(AuthLogin, AuthPassword);
 
             if (userResult.IsFailed)
             {

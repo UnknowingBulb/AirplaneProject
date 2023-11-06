@@ -3,7 +3,7 @@
     /// <summary>
     /// Пассажир
     /// </summary>
-    public class PassengerModel
+    public class Passenger
     {
         /// <summary>
         /// Идентификатор пассажира
@@ -16,7 +16,7 @@
         /// <summary>
         /// Данные автора пассажира
         /// </summary>
-        public virtual UserModel User { get; set; }
+        public virtual User User { get; set; }
         /// <summary>
         /// ФИО пассажира
         /// </summary>

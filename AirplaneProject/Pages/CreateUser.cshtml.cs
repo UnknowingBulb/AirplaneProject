@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AirplaneProject.Objects;
-using AirplaneProject.Authorization;
 using AirplaneProject.Errors;
+using AirplaneProject.Interactors;
 
 namespace AirplaneProject.Pages
 {
     public class CreateModel : AuthOnPage
     {
-        private readonly UserInteractor _userInteractor;
+        private readonly Interactors.User _userInteractor;
 
-        public CreateModel(UserInteractor userInteractor) : base(userInteractor)
+        public CreateModel(Interactors.User userInteractor) : base(userInteractor)
         {
             _userInteractor = userInteractor;
         }
@@ -20,7 +20,7 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public UserModel? CreatedUser { get; set; }
+        public Objects.User? CreatedUser { get; set; }
 
         /// <summary>
         /// Регистрация
@@ -28,7 +28,7 @@ namespace AirplaneProject.Pages
         /// <returns></returns>
         public async Task<IActionResult> OnPostRegistrationAsync()
         {
-            var userResult = await _userInteractor.CreateUserAsync(CreatedUser!);
+            var userResult = await _userInteractor.CreateAndSaveAsync(CreatedUser!);
 
             if (userResult.IsFailed)
             {
