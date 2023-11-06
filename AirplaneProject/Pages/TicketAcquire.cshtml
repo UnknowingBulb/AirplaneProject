@@ -57,11 +57,8 @@ else
                         <div class="row-columns">
                             <div class="column-names login-text">Серия и номер паспорта</div>
                             <input class="column-inputs login-input" asp-for="SeatReserves[srIndex].Passenger.PassportData" />
-
                         </div>
                     }
-
-
                 }
                 <button type="submit" asp-page-handler="AddTicket" asp-route-flightId="@Model.Flight.Id">Добавить билет</button>
                 @if (Model.SeatReserves.Count > 0)
@@ -69,8 +66,11 @@ else
                     <h5>
                         Общая стоимость: @(Model.Flight.Price * Model.SeatReserves.Count)
                     </h5>
+                    @if (Model.Error != string.Empty)
+                    {
+                        <div class="error-text">@Model.Error</div>
+                    }
                     <button type="submit" asp-page-handler="CompleteOrder" asp-route-flightId="@Model.Flight.Id">Оформить заказ</button>
-
                 }
             </form>
         }

@@ -7,7 +7,7 @@ namespace AirplaneProject.Pages
 {
     public class CreateModel : AuthOnPage
     {
-        private readonly Interactors.UserInteractor _userInteractor;
+        private readonly UserInteractor _userInteractor;
 
         public CreateModel(Interactors.UserInteractor userInteractor) : base(userInteractor)
         {
@@ -20,7 +20,7 @@ namespace AirplaneProject.Pages
         }
 
         [BindProperty]
-        public Objects.User? CreatedUser { get; set; }
+        public User? CreatedUser { get; set; }
 
         /// <summary>
         /// Регистрация

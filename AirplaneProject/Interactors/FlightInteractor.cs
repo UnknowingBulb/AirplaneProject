@@ -1,5 +1,6 @@
 ﻿using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
+using AirplaneProject.Objects;
 using FluentResults;
 using System.Text;
 
@@ -16,7 +17,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить рейс с заполненным Orders
         /// </summary>
-        public async Task<Result<Objects.Flight>> GetAsync(Guid flightId)
+        public async Task<Result<Flight>> GetAsync(Guid flightId)
         {
             var flight = await _flightDb.GetAsync(flightId);
             if (flight == null)
@@ -29,7 +30,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public Task<List<Objects.Flight>> GetUpcomingFlightsAsync()
+        public Task<List<Flight>> GetUpcomingFlightsAsync()
         {
             return _flightDb.GetUpcomingFlightsAsync();
         }
@@ -37,7 +38,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список незанятых мест на рейсе
         /// </summary>
-        public IEnumerable<int> GetEmptySeatNumbers(Objects.Flight flight)
+        public IEnumerable<int> GetEmptySeatNumbers(Flight flight)
         {
             var totalSeatCount = flight.SeatingCapacity;
 
@@ -55,7 +56,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Проверка, что указанные места на рейс еще не заняты
         /// </summary>
-        public Result IsSeatsEmpty(Objects.Flight flight, IEnumerable<int> seatNumbers)
+        public Result IsSeatsEmpty(Flight flight, IEnumerable<int> seatNumbers)
         {
             var emptySeatsResult = GetEmptySeatNumbers(flight);
             
@@ -63,7 +64,6 @@ namespace AirplaneProject.Interactors
 
             if (notEmptySeats.Count() == 0)
                 return Result.Ok();
-
 
             var errorMessage = new StringBuilder();
 

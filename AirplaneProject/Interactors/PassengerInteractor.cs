@@ -1,5 +1,6 @@
 ﻿using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
+using AirplaneProject.Objects;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AirplaneProject.Interactors
@@ -16,7 +17,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Пассажиры, созданные пользователем
         /// </summary>
-        public Task<List<Objects.Passenger>> GetUserPassengersAsync(Guid userId)
+        public Task<List<Passenger>> GetUserPassengersAsync(Guid userId)
         {
             return _passengerDb.GetUserPassengersAsync(userId);
         }

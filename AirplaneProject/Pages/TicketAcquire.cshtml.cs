@@ -107,13 +107,10 @@ namespace AirplaneProject.Pages
 
         public async Task<IActionResult> OnPostCompleteOrderAsync(Guid flightId)
         {
-            var flight = await _flightInteractor.GetAsync(flightId);
-            if (flight.IsFailed)
-            {
-                Error = $"Ошибка оформления заказа: {flight.GetResultErrorMessages()}";
-                return Page();
-            }
+            await OnGetAsync(flightId);
 
+            if (!Error.IsNullOrEmpty())
+                return Page();
 
             foreach (var seatReserve in SeatReserves)
             {
@@ -125,9 +122,9 @@ namespace AirplaneProject.Pages
             var order = new Order()
             {
                 Id = Guid.NewGuid(),
-                Flight = flight.Value,
+                Flight = Flight,
                 UserId = ActiveUser!.Id,
-                Price = flight.Value.Price * SeatReserves.Count,
+                Price = Flight.Price * SeatReserves.Count,
                 SeatReserves = SeatReserves.Select(r => r.ToSeatReserve(ActiveUser.Id)).ToList(),
                 IsActive = true
             };

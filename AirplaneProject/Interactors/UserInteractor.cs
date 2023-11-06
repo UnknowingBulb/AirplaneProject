@@ -3,6 +3,7 @@ using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
+using AirplaneProject.Objects;
 
 namespace AirplaneProject.Interactors
 {
@@ -19,7 +20,7 @@ namespace AirplaneProject.Interactors
         /// Получить пользователя по токену авторизации
         /// </summary>
         /// <param name="authToken">Токен</param>
-        public async Task<Result<Objects.User>> GetAsync(string? authToken)
+        public async Task<Result<User>> GetAsync(string? authToken)
         {
             if (JwtToken.ValidateToken(authToken) == false)
                 return Result.Fail("Не удалось получить пользователя");
@@ -44,7 +45,7 @@ namespace AirplaneProject.Interactors
         /// </summary>
         /// <param name="login">Логин</param>
         /// <param name="password">Пароль</param>
-        public async Task<Result<Objects.User>> GetAsync(string login, string password)
+        public async Task<Result<User>> GetAsync(string login, string password)
         {
             if (login == string.Empty)
                 return Result.Fail("Логин пуст, заполните поле");
@@ -64,7 +65,7 @@ namespace AirplaneProject.Interactors
         /// Создать пользователя с сохранением в БД
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public async Task<Result<Objects.User>> CreateAndSaveAsync(Objects.User user)
+        public async Task<Result<User>> CreateAndSaveAsync(User user)
         {
             var validationResult = await ValidateUserForRegistrationAsync(user);
             if (validationResult.IsFailed)
@@ -84,7 +85,7 @@ namespace AirplaneProject.Interactors
         /// Проверка, что пользователь корректно заполнен для регистрации
         /// </summary>
         /// <param name="user">Пользователь</param>
-        private async Task<Result> ValidateUserForRegistrationAsync(Objects.User user)
+        private async Task<Result> ValidateUserForRegistrationAsync(User user)
         {
             var result = Result.Ok();
             if (user == null)

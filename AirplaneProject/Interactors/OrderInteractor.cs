@@ -21,7 +21,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Создать заказ
         /// </summary>
-        public async Task<Result> CreateAsync(Objects.Order order)
+        public async Task<Result> CreateAsync(Order order)
         {
             var isOrderValid = ValidateOrderAsync(order);
             if (isOrderValid.IsFailed)
@@ -34,7 +34,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Установить, что заказ неактивен
         /// </summary>
-        public Task SetNotActiveAsync(Objects.Order order)
+        public Task SetNotActiveAsync(Order order)
         {
             ValidateOrderToChange(order);
             order.IsActive = false;
@@ -44,7 +44,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказ
         /// </summary>
-        public async Task<Result<Objects.Order>> GetAsync(Guid id)
+        public async Task<Result<Order>> GetAsync(Guid id)
         {
             var order = await _orderDb.GetAsync(id);
             if (order == null)
@@ -57,7 +57,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь
         /// </summary>
-        public async Task<Result<List<Objects.Order>>> GetOrdersByUserAsync(Guid userId)
+        public async Task<Result<List<Order>>> GetOrdersByUserAsync(Guid userId)
         {
             var orders = await _orderDb.GetOrdersByUserAsync(userId);
             if (orders.IsNullOrEmpty())
@@ -70,7 +70,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы, которые сделал пользователь по полному/частичному совпадению ФИО
         /// </summary>
-        public async Task<Result<List<Objects.Order>>> GetOrdersByUserNameAsync(string userName)
+        public async Task<Result<List<Order>>> GetOrdersByUserNameAsync(string userName)
         {
             var orders = await _orderDb.GetOrdersByUserNameAsync(userName);
             if (orders.IsNullOrEmpty())
@@ -83,7 +83,7 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить заказы по номеру телефона пользователя
         /// </summary>
-        public async Task<Result<List<Objects.Order>>> GetOrdersByPhoneAsync(string phoneNumber)
+        public async Task<Result<List<Order>>> GetOrdersByPhoneAsync(string phoneNumber)
         {
             var orders = await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber);
             if (orders.IsNullOrEmpty())
@@ -109,7 +109,7 @@ namespace AirplaneProject.Interactors
             return _orderDb.CreateSeatReserveAsync(seatReserves);
         }
 
-        private Result ValidateOrderAsync(Objects.Order order)
+        private Result ValidateOrderAsync(Order order)
         {
             var result = ValidateOrderToChange(order);
             if (result.IsFailed)
@@ -122,8 +122,17 @@ namespace AirplaneProject.Interactors
             var isSeatsEmptyResult = _flightInteractor.IsSeatsEmpty(order.Flight, orderSeatNumbers);
 
             var hasDuplicatePassengers = order.SeatReserves.DistinctBy(sr => sr.PassengerId).Count() != order.SeatReserves.Count;
-            if(hasDuplicatePassengers)
+            if (hasDuplicatePassengers)
                 result = Result.Merge(result, Result.Fail("Есть повторяющиеся пассажиры. Нельзя брать несколько мест на одного пассажира"));
+
+            var hasDuplicateSeatNumber = order.SeatReserves.DistinctBy(sr => sr.SeatNumber).Count() != order.SeatReserves.Count;
+            if (hasDuplicateSeatNumber)
+                result = Result.Merge(result, Result.Fail("В заказе есть повторяющиеся места. Они не должны повторяться"));
+
+            var hasEmptyDataPassengers = order.SeatReserves.Any(sr => sr.Passenger != null && (sr.Passenger.Name == null
+            || sr.Passenger.PassportData == null));
+            if (hasEmptyDataPassengers)
+                result = Result.Merge(result, Result.Fail("Не заполнены данные одного или нескольких пользователей. Все поля обязательны для заполнения"));
 
             if (isSeatsEmptyResult.IsFailed)
                 result = Result.Merge(result, isSeatsEmptyResult);
@@ -131,14 +140,14 @@ namespace AirplaneProject.Interactors
             return result;
         }
 
-        private Result ValidateOrderToChange(Objects.Order order)
+        private Result ValidateOrderToChange(Order order)
         {
             if (order == null)
                 return Result.Fail("Данные пусты. Произошла ошибка. Попробуйте позже");
 
             if (order.Flight.DepartureDateTime < DateTime.UtcNow)
                 return Result.Fail("Время отправки рейса уже прошло. Выберите другой рейс");
-            
+
             return Result.Ok();
         }
     }
