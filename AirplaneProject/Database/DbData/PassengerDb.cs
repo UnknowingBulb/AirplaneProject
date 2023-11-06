@@ -26,22 +26,8 @@ namespace AirplaneProject.Database.DbData
         /// Пассажиры, созданные пользователем
         /// </summary>
         public Task<List<Passenger>> GetUserPassengersAsync(Guid userId)
-        {/*
-            var passengerList = await _dbContext.Passenger.Where(passenger =>  passenger.UserId == userId).ToListAsync();
-            foreach (var passenger in passengerList)
-            {
-                _dbContext.Entry(passenger).State = EntityState.Detached;
-            }
-            return passengerList;*/
-            return _dbContext.Passenger.Where(passenger => passenger.UserId == userId).ToListAsync();
-        }
-
-        /// <summary>
-        /// Создать пассажира (отслеживать в БД)
-        /// </summary>
-        public async Task CreateAsync(Passenger passenger)
         {
-            await _dbContext.Passenger.AddAsync(passenger);
+            return _dbContext.Passenger.Where(passenger => passenger.UserId == userId).ToListAsync();
         }
     }
 }

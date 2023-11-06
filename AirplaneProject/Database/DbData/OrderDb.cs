@@ -25,7 +25,7 @@ namespace AirplaneProject.Database.DbData
             //TODO: проверить и мб удалить
             // Этот черт может пытаться добавить пассажира, даже если он уже существует
             // Поэтому действуем на опережение и говорим ему, что такие пассажиры могут быть сохранены
-            foreach (var seatReserve in order.SeatReserves)
+            /*foreach (var seatReserve in order.SeatReserves)
             {
                 var passengerList2 = _dbContext.Passenger.Where(passenger => passenger.Id == seatReserve.PassengerId).ToList();
                 foreach (var passenger in passengerList2)
@@ -33,7 +33,7 @@ namespace AirplaneProject.Database.DbData
                     _dbContext.Entry(passenger).State = EntityState.Detached;
                 }
                 
-            }
+            }*/
 
             await _dbContext.Order.AddAsync(order);
 
@@ -85,20 +85,6 @@ namespace AirplaneProject.Database.DbData
         /// </summary>
         public async Task CreateSeatReserveAsync(List<SeatReserve> seatReserves)
         {
-            /*
-            //TODO: проверить и мб удалить
-            // Этот черт может пытаться добавить пассажира, даже если он уже существует
-            // Поэтому действуем на опережение и говорим ему, что такие пассажиры могут быть сохранены
-            foreach (var seatReserve in seatReserves)
-            {
-                var passengerList2 = _dbContext.Passenger.Where(passenger => passenger.Id == seatReserve.PassengerId).ToList();
-                foreach (var passenger in passengerList2)
-                {
-                    _dbContext.Entry(passenger).State = EntityState.Detached;
-                }
-
-            }*/
-            _dbContext.SeatReserve.UpdateRange(seatReserves);
             await _dbContext.SeatReserve.AddRangeAsync(seatReserves);
         }
     }

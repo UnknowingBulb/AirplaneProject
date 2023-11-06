@@ -1,15 +1,14 @@
-﻿using AirplaneProject.Objects;
-using AirplaneProject.Database;
+﻿using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
 using System.Text;
 
 namespace AirplaneProject.Interactors
 {
-    public class Flight
+    public class FlightInteractor
     {
         private readonly FlightDb _flightDb;
-        public Flight(ApplicationDbContext dbContext)
+        public FlightInteractor(ApplicationDbContext dbContext)
         {
             _flightDb = new FlightDb(dbContext);
         }

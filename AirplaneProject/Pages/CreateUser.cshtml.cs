@@ -7,9 +7,9 @@ namespace AirplaneProject.Pages
 {
     public class CreateModel : AuthOnPage
     {
-        private readonly Interactors.User _userInteractor;
+        private readonly Interactors.UserInteractor _userInteractor;
 
-        public CreateModel(Interactors.User userInteractor) : base(userInteractor)
+        public CreateModel(Interactors.UserInteractor userInteractor) : base(userInteractor)
         {
             _userInteractor = userInteractor;
         }

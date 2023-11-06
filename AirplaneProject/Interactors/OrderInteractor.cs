@@ -4,19 +4,18 @@ using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Interactors
 {
     [Authorize]
-    public class Order
+    public class OrderInteractor
     {
         private readonly OrderDb _orderDb;
-        private readonly Flight _flightInteractor;
-        public Order(ApplicationDbContext dbContext)
+        private readonly FlightInteractor _flightInteractor;
+        public OrderInteractor(ApplicationDbContext dbContext)
         {
             _orderDb = new OrderDb(dbContext);
-            _flightInteractor = new Flight(dbContext);
+            _flightInteractor = new FlightInteractor(dbContext);
         }
 
         /// <summary>
@@ -121,6 +120,11 @@ namespace AirplaneProject.Interactors
 
             var orderSeatNumbers = order.SeatReserves.Select(sr => sr.SeatNumber);
             var isSeatsEmptyResult = _flightInteractor.IsSeatsEmpty(order.Flight, orderSeatNumbers);
+
+            var hasDuplicatePassengers = order.SeatReserves.DistinctBy(sr => sr.PassengerId).Count() != order.SeatReserves.Count;
+            if(hasDuplicatePassengers)
+                result = Result.Merge(result, Result.Fail("Есть повторяющиеся пассажиры. Нельзя брать несколько мест на одного пассажира"));
+
             if (isSeatsEmptyResult.IsFailed)
                 result = Result.Merge(result, isSeatsEmptyResult);
 

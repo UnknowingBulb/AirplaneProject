@@ -10,11 +10,11 @@ namespace AirplaneProject.Pages
 {
     public abstract class AuthOnPage : PageModel
     {
-        private readonly Interactors.User _userInteractor;
+        private readonly Interactors.UserInteractor _userInteractor;
         private string? _authToken;
         private Objects.User? _activeUser;
 
-        public AuthOnPage(Interactors.User userInteractor)
+        public AuthOnPage(Interactors.UserInteractor userInteractor)
         {
             _userInteractor = userInteractor;
         }

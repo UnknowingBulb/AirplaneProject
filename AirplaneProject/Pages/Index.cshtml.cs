@@ -8,9 +8,9 @@ namespace AirplaneProject.Pages
 {
     public class IndexModel : AuthOnPage
     {
-        private readonly Interactors.Flight _flightInteractor;
-        private readonly Interactors.Order _orderInteractor;
-        public IndexModel(Interactors.Flight flightInteractor, Interactors.Order orderInteractor, Interactors.User authorizationInteractor) : base(authorizationInteractor)
+        private readonly Interactors.FlightInteractor _flightInteractor;
+        private readonly Interactors.OrderInteractor _orderInteractor;
+        public IndexModel(Interactors.FlightInteractor flightInteractor, Interactors.OrderInteractor orderInteractor, Interactors.UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;

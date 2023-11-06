@@ -1,5 +1,4 @@
-﻿using AirplaneProject.Objects;
-using AirplaneProject.Database;
+﻿using AirplaneProject.Database;
 using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.IdentityModel.Tokens;
@@ -7,10 +6,10 @@ using AirplaneProject.Authorization;
 
 namespace AirplaneProject.Interactors
 {
-    public class User
+    public class UserInteractor
     {
         private readonly UserDb _userDb;
-        public User(ApplicationDbContext dbContext)
+        public UserInteractor(ApplicationDbContext dbContext)
         {
             _userDb = new UserDb(dbContext);
             //TODO: заменить всё в JwtToken на Интерфейс, чтобы отойти от завязки на него
