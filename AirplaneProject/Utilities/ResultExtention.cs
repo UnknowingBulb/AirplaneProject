@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using System.Text;
 
-namespace AirplaneProject.Errors
+namespace AirplaneProject.Utilities
 {
     public static class ResultExtention
     {

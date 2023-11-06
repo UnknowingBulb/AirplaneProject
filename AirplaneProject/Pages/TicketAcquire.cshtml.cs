@@ -3,7 +3,7 @@ using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using AirplaneProject.Errors;
+using AirplaneProject.Utilities;
 using AirplaneProject.Database.DbData;
 using AirplaneProject.ViewModels;
 

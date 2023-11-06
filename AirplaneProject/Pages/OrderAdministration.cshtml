@@ -5,6 +5,22 @@
 <form method="post">
     <div>
         <h4>Заказы:</h4>
+        <div>
+            <h5>Применить фильры</h5>
+            <div class="row-columns">
+                <div class="column-names">по ФИО</div>
+                <input class="column-inputs" asp-for="SearchClientName" />
+                <button type="submit" asp-page-handler="ApplyNameFilter">Применить фильтр</button>
+            </div>
+
+            <div class="row-columns">
+                <div class="column-names">по номеру телефона:</div>
+                <input class="column-inputs" asp-for="SearchClientPhoneNumber" />
+                <button type="submit" asp-page-handler="ApplyPhoneFilter">Применить фильтр</button>
+            </div>
+            <button type="submit" asp-page-handler="ResetFilters">Сбросить фильтры</button>
+            <span align="left" class="error-text">@Html.ValidationMessage("FilterError")</span>
+        </div>
         <table class="table">
             <thead>
                 <tr>

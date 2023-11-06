@@ -4,6 +4,7 @@ using AirplaneProject.Database.DbData;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using AirplaneProject.Utilities;
 
 namespace AirplaneProject.Interactors
 {
@@ -76,16 +77,14 @@ namespace AirplaneProject.Interactors
         }
 
         /// <summary>
-        /// Получить заказы, которые сделал пользователь по полному/частичному совпадению ФИО
+        /// Получить заказы, которые сделал пользователи, у которых ФИО содержит переданную строку
         /// </summary>
-        public async Task<Result<List<Order>>> GetOrdersByUserNameAsync(string userName)
+        public async Task<Result<List<Order>>> GetOrdersByUserNameAsync(string name)
         {
-            var orders = await _orderDb.GetOrdersByUserNameAsync(userName);
-            if (orders.IsNullOrEmpty())
-            {
-                return Result.Fail("Не удалось найти заказы");
-            }
-            return Result.Ok(orders);
+            if (name.IsNullOrEmpty())
+                return Result.Fail("ФИО для поиска пусты, попробуйте еще раз");
+
+            return await _orderDb.GetOrdersByUserNameAsync(name);
         }
 
         /// <summary>
@@ -93,28 +92,12 @@ namespace AirplaneProject.Interactors
         /// </summary>
         public async Task<Result<List<Order>>> GetOrdersByPhoneAsync(string phoneNumber)
         {
-            var orders = await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber);
-            if (orders.IsNullOrEmpty())
-            {
-                return Result.Fail("Не удалось найти заказы");
-            }
-            return Result.Ok(orders);
-        }
+            var searchPhoneResult = PhoneNumberUtility.TryConvertToPlusSeven(phoneNumber);
 
-        /// <summary>
-        /// Создать резев места (отслеживать в БД)
-        /// </summary>
-        public Task CreateSeatReserveAsync(SeatReserve seatReserve)
-        {
-            return _orderDb.CreateSeatReserveAsync(seatReserve);
-        }
+            if (searchPhoneResult.IsFailed)
+                return Result.Fail(searchPhoneResult.GetResultErrorMessages());
 
-        /// <summary>
-        /// Создать резев места (отслеживать в БД)
-        /// </summary>
-        public Task CreateSeatReserveAsync(List<SeatReserve> seatReserves)
-        {
-            return _orderDb.CreateSeatReserveAsync(seatReserves);
+            return Result.Ok(await _orderDb.GetOrdersByUserPhoneAsync(phoneNumber));
         }
 
         private Result ValidateOrderAsync(Order order)

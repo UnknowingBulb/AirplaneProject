@@ -55,7 +55,11 @@ namespace AirplaneProject.Database.DbData
         /// </summary>
         public Task<List<Order>> GetOrdersByUserNameAsync(string name)
         {
-            return _dbContext.Order.Where(order => order.User.Name.Contains(name)).ToListAsync();
+            return _dbContext.Order
+                .Include(o => o.Flight)
+                .Include(o => o.User)
+                .Where(o => o.User.Name.Contains(name))
+                .ToListAsync();
         }
 
         /// <summary>
@@ -63,23 +67,11 @@ namespace AirplaneProject.Database.DbData
         /// </summary>
         public Task<List<Order>> GetOrdersByUserPhoneAsync(string phone)
         {
-            return _dbContext.Order.Where(order => order.User.PhoneNumber == phone).ToListAsync();
-        }
-
-        /// <summary>
-        /// Создать резев места (отслеживать в БД)
-        /// </summary>
-        public async Task CreateSeatReserveAsync(SeatReserve seatReserve)
-        {
-            await _dbContext.SeatReserve.AddAsync(seatReserve);
-        }
-
-        /// <summary>
-        /// Создать резев места (отслеживать в БД)
-        /// </summary>
-        public async Task CreateSeatReserveAsync(List<SeatReserve> seatReserves)
-        {
-            await _dbContext.SeatReserve.AddRangeAsync(seatReserves);
+            return _dbContext.Order
+                .Include(o => o.Flight)
+                .Include(o => o.User)
+                .Where(order => order.User.PhoneNumber.Contains(phone))
+                .ToListAsync();
         }
 
         /// <summary>

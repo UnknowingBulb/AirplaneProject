@@ -4,6 +4,7 @@ using FluentResults;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Authorization;
 using AirplaneProject.Objects;
+using AirplaneProject.Utilities;
 
 namespace AirplaneProject.Interactors
 {
@@ -100,24 +101,17 @@ namespace AirplaneProject.Interactors
             if (user.Name.IsNullOrEmpty())
                 result = Result.Merge(result, Result.Fail("ФИО пусто, заполните поле"));
 
-            if (IsPhoneNumberValid(user.PhoneNumber))
-                result = Result.Merge(result, Result.Fail("Номер телефона пользователя должен начинаться с +7 и быть корректной длины"));
+            var phoneNumberResult = PhoneNumberUtility.TryConvertToPlusSeven(user.PhoneNumber);
+
+            if (phoneNumberResult.IsSuccess)
+                user.PhoneNumber = phoneNumberResult.Value;
+            else
+                result = Result.Merge(result, Result.Fail(phoneNumberResult.GetResultErrorMessages()));
 
             if (await _userDb.IsAnyWithSameLoginAsync(user.Login))
                 result = Result.Merge(result, Result.Fail("Пользователь с таким логином уже существует, выберите другой"));
 
             return result;
-        }
-
-        /// <summary>
-        /// Валидация корректности номера телефона
-        /// </summary>
-        /// <param name="phoneNumber">Номер телефона</param>
-        private bool IsPhoneNumberValid(string phoneNumber)
-        {
-            return phoneNumber.IsNullOrEmpty() ||
-                !(phoneNumber.StartsWith("+7") && phoneNumber.Length == 12 ||
-                phoneNumber.StartsWith("8") && phoneNumber.Length == 12);
         }
     }
 }

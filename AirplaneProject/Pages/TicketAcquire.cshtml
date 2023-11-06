@@ -44,8 +44,8 @@ else
                         <div class="column-names login-text">Выбрать сохраненного пассажира</div>
                         <select onchange="this.form.submit()" class="column-inputs login-input" asp-for="SeatReserves[srIndex].PassengerId"
                                 asp-items=@(new SelectList(Model.UserPassengers
-                    .Select(p => new {Id = p.Id, Name = (p.PassportData == null || p.PassportData == string.Empty) ? "Добавить нового" : $"{p.Name} - {p.PassportData}"}),
-                    "Id", "Name", Model.SeatReserves[srIndex].PassengerId))></select>
+                                .Select(p => new {Id = p.Id, Name = (p.Id == Guid.Empty) ? "Добавить нового" : $"{p.Name} - {p.PassportData}"}),
+                                "Id", "Name", Model.SeatReserves[srIndex].PassengerId))></select>
                     </div>
                     @if (Model.SeatReserves[srIndex].PassengerId == Guid.Empty)
                     {
