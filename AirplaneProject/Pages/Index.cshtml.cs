@@ -1,16 +1,15 @@
 ﻿using AirplaneProject.Objects;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AirplaneProject.Pages
 {
     public class IndexModel : AuthOnPage
     {
-        private readonly Interactors.FlightInteractor _flightInteractor;
-        private readonly Interactors.OrderInteractor _orderInteractor;
-        public IndexModel(Interactors.FlightInteractor flightInteractor, Interactors.OrderInteractor orderInteractor, Interactors.UserInteractor authorizationInteractor) : base(authorizationInteractor)
+        private readonly FlightInteractor _flightInteractor;
+        private readonly OrderInteractor _orderInteractor;
+        public IndexModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, UserInteractor authorizationInteractor) : base(authorizationInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;
@@ -19,11 +18,11 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Список ближайших полетов
         /// </summary>
-        public List<Objects.Flight> Flights { get; set; }
+        public List<Flight> Flights { get; set; }
         /// <summary>
         /// Список заказов текущего пользователя
         /// </summary>
-        public List<Objects.Order> ActiveUserOrders { get; set; }
+        public List<Order> ActiveUserOrders { get; set; }
 
         public async Task OnGetAsync()
         {

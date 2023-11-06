@@ -12,10 +12,10 @@ namespace AirplaneProject.Pages
     [Authorize]
     public class TicketAcquireModel : AuthOnPage
     {
-        private readonly Interactors.FlightInteractor _flightInteractor;
-        private readonly Interactors.OrderInteractor _orderInteractor;
-        private readonly Interactors.PassengerInteractor _passengerInteractor;
-        public TicketAcquireModel(Interactors.FlightInteractor flightInteractor, Interactors.OrderInteractor orderInteractor, Interactors.PassengerInteractor passengerInteractor, Interactors.UserInteractor userInteractor) : base(userInteractor)
+        private readonly FlightInteractor _flightInteractor;
+        private readonly OrderInteractor _orderInteractor;
+        private readonly PassengerInteractor _passengerInteractor;
+        public TicketAcquireModel(FlightInteractor flightInteractor, OrderInteractor orderInteractor, PassengerInteractor passengerInteractor, UserInteractor userInteractor) : base(userInteractor)
         {
             _flightInteractor = flightInteractor;
             _orderInteractor = orderInteractor;
@@ -26,7 +26,7 @@ namespace AirplaneProject.Pages
         /// Рейс, на который оформляем билет
         /// </summary>
         [BindProperty]
-        public Objects.Flight Flight { get; set; }
+        public Flight Flight { get; set; }
 
         /// <summary>
         /// Пассажиры, созданные пользователем
@@ -122,7 +122,7 @@ namespace AirplaneProject.Pages
                     seatReserve.Passenger = UserPassengers.First(p => p.Id == seatReserve.PassengerId);
                 }
             }
-            var order = new Objects.Order()
+            var order = new Order()
             {
                 Id = Guid.NewGuid(),
                 Flight = flight.Value,

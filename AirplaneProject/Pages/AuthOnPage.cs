@@ -10,9 +10,9 @@ namespace AirplaneProject.Pages
 {
     public abstract class AuthOnPage : PageModel
     {
-        private readonly Interactors.UserInteractor _userInteractor;
+        private readonly UserInteractor _userInteractor;
         private string? _authToken;
-        private Objects.User? _activeUser;
+        private User? _activeUser;
 
         public AuthOnPage(Interactors.UserInteractor userInteractor)
         {
@@ -50,7 +50,7 @@ namespace AirplaneProject.Pages
         /// <summary>
         /// Текущий пользователь
         /// </summary>
-        public Objects.User? ActiveUser
+        public User? ActiveUser
         {
             get
             {
