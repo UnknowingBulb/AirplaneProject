@@ -16,16 +16,22 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Билетуль</a>
                 @if (User?.Identity != null && User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserRole)?.Value == RoleTypes.Employee)
-
                 {
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/OrderAdministration">Админка</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/OrderAdministration">Админка</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SpawnData">Добавление данных в БД</a>
                         </li>
                     </ul>
                 </div>
-}
                 <partial name="_User.cshtml" />
             </div>
         </nav>

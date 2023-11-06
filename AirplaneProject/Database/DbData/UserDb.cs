@@ -41,10 +41,10 @@ namespace AirplaneProject.Database.DbData
         /// <summary>
         /// Сохранить пользователя
         /// </summary>
-        public Task SaveAsync(User user)
+        public async Task SaveAsync(User user)
         {
-            _dbContext.User.Add(user);
-            return _dbContext.SaveChangesAsync();
+            await _dbContext.User.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>
