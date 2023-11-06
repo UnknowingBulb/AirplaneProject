@@ -35,14 +35,14 @@ namespace AirplaneProject.Interactors
         /// Получить список неотправившихся рейсов
         /// </summary>
         public async Task<List<Flight>> GetUpcomingFlightsAsync()
-        {
+        {/*
             var cacheData = await _cacheService.GetDataAsync<List<Flight>>("flight");
             if (cacheData != null)
             {
                 return cacheData;
-            }
+            }*/
             var expirationTime = DateTimeOffset.Now.AddMinutes(5.0);
-            cacheData = await _flightDb.GetUpcomingFlightsAsync();
+            var cacheData = await _flightDb.GetUpcomingFlightsAsync();
             await _cacheService.SetDataAsync("flight", cacheData, expirationTime);
 
             return cacheData;

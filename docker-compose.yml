@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.3
+    container_name: airplane-postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: airplane-project
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+    networks:
+      - host
+      
+  redis:
+    image: redis:latest
+    container_name: airplane-redis
+    ports:
+      - 6379:6379
+    command: "redis-server --requirepass SECRET_PASSWORD"
+    networks:
+      - host
+    
+  project:
+    image: airplaneproject:latest
+    ports:
+      - 85:80
+      - 4452:443
+    networks:
+        - host
+    environment:
+        DOTNET_ENVIRONMENT: "Development.Docker"
+    
+networks:
+  host:
+    driver: bridge
