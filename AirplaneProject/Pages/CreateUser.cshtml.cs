@@ -2,6 +2,7 @@
 using AirplaneProject.Objects;
 using AirplaneProject.Utilities;
 using AirplaneProject.Interactors;
+using AirplaneProject.Pages.Shared;
 
 namespace AirplaneProject.Pages
 {
@@ -9,7 +10,7 @@ namespace AirplaneProject.Pages
     {
         private readonly UserInteractor _userInteractor;
 
-        public CreateModel(Interactors.UserInteractor userInteractor) : base(userInteractor)
+        public CreateModel(UserInteractor userInteractor) : base(userInteractor)
         {
             _userInteractor = userInteractor;
         }

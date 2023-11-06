@@ -2,6 +2,7 @@ using AirplaneProject.Authorization;
 using AirplaneProject.Database;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,16 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode >= 400)
+    {
+        response.Redirect($"/LoadErrorPage?statusCode={response.StatusCode}");
+    }
+});
 
 app.UseRouting();
 

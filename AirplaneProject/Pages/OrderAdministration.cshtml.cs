@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using AirplaneProject.Utilities;
 using AirplaneProject.Authorization;
+using AirplaneProject.Pages.Shared;
 
 namespace AirplaneProject.Pages
 {

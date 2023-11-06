@@ -6,7 +6,7 @@ using AirplaneProject.Authorization;
 using System.ComponentModel.DataAnnotations;
 using AirplaneProject.Interactors;
 
-namespace AirplaneProject.Pages
+namespace AirplaneProject.Pages.Shared
 {
     public abstract class AuthOnPage : PageModel
     {
@@ -14,7 +14,7 @@ namespace AirplaneProject.Pages
         private string? _authToken;
         private User? _activeUser;
 
-        public AuthOnPage(Interactors.UserInteractor userInteractor)
+        public AuthOnPage(UserInteractor userInteractor)
         {
             _userInteractor = userInteractor;
         }
