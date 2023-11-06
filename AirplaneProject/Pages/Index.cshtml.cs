@@ -41,5 +41,27 @@ namespace AirplaneProject.Pages
         {
             return RedirectToPage("TicketAcquire", new {FlightId = flightId });
         }
+
+        public async Task OnPostCancelAsync(Guid orderId)
+        {
+            if (ActiveUser == null)
+            {
+                RedirectToPage();
+                return;
+            }
+
+            var orderResult = await _orderInteractor.GetAsync(orderId);
+            
+            // TODO: тут могли бы быть какие-нибудь сообщения об ошибке
+            if (orderResult.IsFailed)
+                return;
+
+            if (orderResult.Value.UserId != ActiveUser.Id)
+                return;
+
+
+            await _orderInteractor.SetNotActiveAsync(orderResult.Value);
+            await OnGetAsync();
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace AirplaneProject.Interactors
         {
             ValidateOrderToChange(order);
             order.IsActive = false;
-            return _orderDb.CreateAndSaveAsync(order);
+            return _orderDb.SaveAsync(order);
         }
 
         /// <summary>

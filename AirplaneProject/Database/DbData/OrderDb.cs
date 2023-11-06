@@ -25,11 +25,21 @@ namespace AirplaneProject.Database.DbData
         }
 
         /// <summary>
+        /// Сохранить заказ
+        /// </summary>
+        public async Task SaveAsync(Order order)
+        {
+            _dbContext.Order.Update(order);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        /// <summary>
         /// Получить заказ
         /// </summary>
-        public ValueTask<Order?> GetAsync(Guid id)
+        public Task<Order?> GetAsync(Guid id)
         {
-            return _dbContext.Order.FindAsync(id);
+            return _dbContext.Order.Include(o=>o.Flight).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         /// <summary>
