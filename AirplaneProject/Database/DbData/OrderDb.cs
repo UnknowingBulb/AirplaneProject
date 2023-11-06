@@ -39,7 +39,7 @@ namespace AirplaneProject.Database.DbData
         /// </summary>
         public Task<Order?> GetAsync(Guid id)
         {
-            return _dbContext.Order.Include(o=>o.Flight).FirstOrDefaultAsync(o => o.Id == id);
+            return _dbContext.Order.Include(o => o.Flight).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         /// <summary>
@@ -80,6 +80,14 @@ namespace AirplaneProject.Database.DbData
         public async Task CreateSeatReserveAsync(List<SeatReserve> seatReserves)
         {
             await _dbContext.SeatReserve.AddRangeAsync(seatReserves);
+        }
+
+        /// <summary>
+        /// Получить список всех заказов
+        /// </summary>
+        public Task<List<Order>> GetOrdersAsync()
+        {
+            return _dbContext.Order.Include(o => o.Flight).Include(o => o.User).ToListAsync();
         }
     }
 }

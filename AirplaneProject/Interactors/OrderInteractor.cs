@@ -55,6 +55,14 @@ namespace AirplaneProject.Interactors
         }
 
         /// <summary>
+        /// Получить все заказы
+        /// </summary>
+        public Task<List<Order>> GetOrdersAsync()
+        {
+            return _orderDb.GetOrdersAsync();
+        }
+
+        /// <summary>
         /// Получить заказы, которые сделал пользователь
         /// </summary>
         public async Task<Result<List<Order>>> GetOrdersByUserAsync(Guid userId)

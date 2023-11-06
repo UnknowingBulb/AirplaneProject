@@ -19,6 +19,7 @@ namespace AirplaneProject.Pages
         /// Список ближайших полетов
         /// </summary>
         public List<Flight> Flights { get; set; }
+
         /// <summary>
         /// Список заказов текущего пользователя
         /// </summary>
