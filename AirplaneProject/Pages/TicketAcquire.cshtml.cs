@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Utilities;
-using AirplaneProject.Database.DbData;
 using AirplaneProject.ViewModels;
+using AirplaneProject.Authorization;
 
 namespace AirplaneProject.Pages
 {
-    [Authorize]
+    [Authorize(Roles = RoleTypes.Customer)]
     public class TicketAcquireModel : AuthOnPage
     {
         private readonly FlightInteractor _flightInteractor;

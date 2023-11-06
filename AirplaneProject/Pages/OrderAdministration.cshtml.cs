@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using AirplaneProject.Utilities;
+using AirplaneProject.Authorization;
 
 namespace AirplaneProject.Pages
 {
-    [Authorize]
+    [Authorize(Roles = RoleTypes.Employee)]
     public class OrderAdministrationModel : AuthOnPage
     {
         private readonly OrderInteractor _orderInteractor;

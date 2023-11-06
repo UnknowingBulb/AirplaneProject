@@ -26,7 +26,7 @@ namespace AirplaneProject.Authorization
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <param name="role">Роль</param>
-        public static string GenerateToken(Guid userId, RoleTypes role)
+        public static string GenerateToken(Guid userId, string role)
         {
             var securityKey = TokenValidationParameters.IssuerSigningKey;
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -38,7 +38,7 @@ namespace AirplaneProject.Authorization
                 claims: new[]
                 {
                     new Claim(ClaimTypes.UserId, userId.ToString()),
-                    new Claim(ClaimTypes.UserRole, role.ToString())
+                    new Claim(ClaimTypes.UserRole, role)
                 },
                 expires: DateTime.UtcNow.AddDays(1));
 

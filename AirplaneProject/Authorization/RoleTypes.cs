@@ -1,11 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-
-namespace AirplaneProject.Authorization
+﻿namespace AirplaneProject.Authorization
 {
-    public enum RoleTypes
+    public struct RoleTypes
     {
-        NotDefined = 0,
-        Customer = 1,
-        Employee = 2
+        public const string NotDefined = "NotDefined";
+        public const string Customer = "Customer";
+        public const string Employee = "Employee";
     }
 }
