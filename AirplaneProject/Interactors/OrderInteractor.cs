@@ -5,6 +5,7 @@ using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using AirplaneProject.Utilities;
+using AirplaneProject.Database.Cache;
 
 namespace AirplaneProject.Interactors
 {
@@ -12,11 +13,13 @@ namespace AirplaneProject.Interactors
     public class OrderInteractor
     {
         private readonly OrderDb _orderDb;
+        private readonly ICacheService _cacheService;
         private readonly FlightInteractor _flightInteractor;
-        public OrderInteractor(ApplicationDbContext dbContext)
+        public OrderInteractor(ApplicationDbContext dbContext, ICacheService cacheService)
         {
             _orderDb = new OrderDb(dbContext);
-            _flightInteractor = new FlightInteractor(dbContext);
+            _flightInteractor = new FlightInteractor(dbContext, cacheService);
+            _cacheService = cacheService;
         }
 
         /// <summary>

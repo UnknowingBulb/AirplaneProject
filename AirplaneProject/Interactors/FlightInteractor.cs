@@ -1,7 +1,9 @@
 ﻿using AirplaneProject.Database;
+using AirplaneProject.Database.Cache;
 using AirplaneProject.Database.DbData;
 using AirplaneProject.Objects;
 using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace AirplaneProject.Interactors
@@ -9,9 +11,11 @@ namespace AirplaneProject.Interactors
     public class FlightInteractor
     {
         private readonly FlightDb _flightDb;
-        public FlightInteractor(ApplicationDbContext dbContext)
+        private readonly ICacheService _cacheService;
+        public FlightInteractor(ApplicationDbContext dbContext, ICacheService cacheService)
         {
             _flightDb = new FlightDb(dbContext);
+            _cacheService = cacheService;
         }
 
         /// <summary>
@@ -30,9 +34,18 @@ namespace AirplaneProject.Interactors
         /// <summary>
         /// Получить список неотправившихся рейсов
         /// </summary>
-        public Task<List<Flight>> GetUpcomingFlightsAsync()
+        public async Task<List<Flight>> GetUpcomingFlightsAsync()
         {
-            return _flightDb.GetUpcomingFlightsAsync();
+            var cacheData = await _cacheService.GetDataAsync<List<Flight>>("flight");
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
+            var expirationTime = DateTimeOffset.Now.AddMinutes(5.0);
+            cacheData = await _flightDb.GetUpcomingFlightsAsync();
+            await _cacheService.SetDataAsync("flight", cacheData, expirationTime);
+
+            return cacheData;
         }
 
         /// <summary>

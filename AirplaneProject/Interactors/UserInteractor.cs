@@ -14,7 +14,6 @@ namespace AirplaneProject.Interactors
         public UserInteractor(ApplicationDbContext dbContext)
         {
             _userDb = new UserDb(dbContext);
-            //TODO: заменить всё в JwtToken на Интерфейс, чтобы отойти от завязки на него
         }
 
         /// <summary>

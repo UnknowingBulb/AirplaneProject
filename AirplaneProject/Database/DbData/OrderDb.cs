@@ -47,7 +47,7 @@ namespace AirplaneProject.Database.DbData
         /// </summary>
         public Task<List<Order>> GetOrdersByUserAsync(Guid userId)
         {
-            return _dbContext.Order.Where(order => order.UserId == userId).ToListAsync();
+            return _dbContext.Order.Include(o => o.Flight).Where(order => order.UserId == userId).ToListAsync();
         }
 
         /// <summary>

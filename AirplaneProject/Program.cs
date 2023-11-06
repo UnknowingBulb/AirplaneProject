@@ -1,5 +1,6 @@
 using AirplaneProject.Authorization;
 using AirplaneProject.Database;
+using AirplaneProject.Database.Cache;
 using AirplaneProject.Interactors;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net;
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 builder.Services.AddScoped<UserInteractor>();
 builder.Services.AddScoped<FlightInteractor>();
 builder.Services.AddScoped<OrderInteractor>();

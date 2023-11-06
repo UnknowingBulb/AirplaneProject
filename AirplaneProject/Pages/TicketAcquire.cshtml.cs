@@ -51,7 +51,6 @@ namespace AirplaneProject.Pages
         [BindProperty]
         public List<SeatReserveView> SeatReserves { get; set; } = new List<SeatReserveView>();
 
-        //TODO: добавить везде в асинк cancellation
         public async Task OnGetAsync(Guid flightId)
         {
             var flightResult = await _flightInteractor.GetAsync(flightId);

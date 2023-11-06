@@ -57,13 +57,11 @@ namespace AirplaneProject.Authorization
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            SecurityToken validatedToken;
             try
             {
-                IPrincipal principal = tokenHandler.ValidateToken(authToken, TokenValidationParameters, out validatedToken);
+                var principal = tokenHandler.ValidateToken(authToken, TokenValidationParameters, out _);
             }
-            //TODO уточнить что за тип исключения там
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
