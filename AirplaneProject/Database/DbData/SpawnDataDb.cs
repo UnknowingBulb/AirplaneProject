@@ -1,4 +1,5 @@
-﻿using AirplaneProject.Objects;
+﻿using AirplaneProject.Domain.Entities;
+using AirplaneProject.Infrastructure.Database;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 

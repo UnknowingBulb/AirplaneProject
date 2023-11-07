@@ -1,4 +1,5 @@
-﻿using AirplaneProject.Objects;
+﻿using AirplaneProject.Domain.Entities;
+using AirplaneProject.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace AirplaneProject.Database.DbData

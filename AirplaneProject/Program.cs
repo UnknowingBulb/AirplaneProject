@@ -1,14 +1,20 @@
-using AirplaneProject.Authorization;
-using AirplaneProject.Database;
 using AirplaneProject.Database.Cache;
-using AirplaneProject.Interactors;
+using AirplaneProject.Infrastructure.Authorization;
+using AirplaneProject.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Net;
+using AirplaneProject.Application.Interactors;
+using AirplaneProject.Infrastructure.Database.RedisCache;
 
-var builder = WebApplication.CreateBuilder(args);
+var opts = new WebApplicationOptions()
+{
+    Args = args,
+    WebRootPath = "WebUI/wwwroot"
+};
+var builder = WebApplication.CreateBuilder(opts);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(opt => opt.RootDirectory = "/WebUI/Pages");
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 builder.Services.AddScoped<UserInteractor>();
