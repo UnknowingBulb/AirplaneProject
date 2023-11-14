@@ -4,6 +4,7 @@ using AirplaneProject.Domain.Entities;
 using AirplaneProject.Infrastructure.Database;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace AirplaneProject.Application.Interactors
@@ -35,17 +36,18 @@ namespace AirplaneProject.Application.Interactors
         /// Получить список неотправившихся рейсов
         /// </summary>
         public async Task<List<Flight>> GetUpcomingFlightsAsync()
-        {/*
+        {
             var cacheData = await _cacheService.GetDataAsync<List<Flight>>("flight");
-            if (cacheData != null)
+            if (!cacheData.IsNullOrEmpty())
             {
                 return cacheData;
-            }*/
-            var expirationTime = DateTimeOffset.Now.AddMinutes(5.0);
-            var cacheData = await _flightDb.GetUpcomingFlightsAsync();
-            await _cacheService.SetDataAsync("flight", cacheData, expirationTime);
+            }
 
-            return cacheData;
+            var expirationTime = DateTimeOffset.Now.AddMinutes(1);
+            var newCacheData = await _flightDb.GetUpcomingFlightsAsync();
+            await _cacheService.SetDataAsync("flight", newCacheData, expirationTime);
+
+            return newCacheData;
         }
 
         /// <summary>

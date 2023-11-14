@@ -1,34 +1,35 @@
 ﻿using AirplaneProject.Database.Cache;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using StackExchange.Redis;
 
 namespace AirplaneProject.Infrastructure.Database.RedisCache
 {
     public class RedisCacheService : ICacheService
     {
-        private IDatabase _db;
-        public RedisCacheService()
+        private IDistributedCache _distributedCache;
+
+        public RedisCacheService(IDistributedCache distributedCache)
         {
-            ConfigureRedis();
+            _distributedCache = distributedCache;
         }
-        private void ConfigureRedis()
-        {
-            _db = ConnectionHelper.Connection.GetDatabase();
-        }
+
         public async Task<T> GetDataAsync<T>(string key)
         {
-            var value = await _db.StringGetAsync(key);
+            var value = await _distributedCache.GetStringAsync(key);
             if (!string.IsNullOrEmpty(value))
             {
                 return JsonConvert.DeserializeObject<T>(value);
             }
             return default;
         }
-        public Task<bool> SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime)
+        public Task SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime)
         {
             var expiryTime = expirationTime.DateTime.Subtract(DateTime.Now);
-            var isSet = _db.StringSetAsync(key, JsonConvert.SerializeObject(value), expiryTime);
-            return isSet;
+            var cacheOptions = new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpiration = expirationTime
+            };
+            return _distributedCache.SetStringAsync(key, JsonConvert.SerializeObject(value), cacheOptions);
         }
     }
 }

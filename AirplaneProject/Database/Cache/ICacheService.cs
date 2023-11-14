@@ -10,6 +10,6 @@
         /// <summary>
         /// Сохранить данные в кэш
         /// </summary>
-        Task<bool> SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime);
+        Task SetDataAsync<T>(string key, T value, DateTimeOffset expirationTime);
     }
 }

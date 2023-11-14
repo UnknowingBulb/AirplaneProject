@@ -5,12 +5,13 @@
 0) Должен быть установлен докер
 1) В powershell из корневой папки проекта выполнить:
 ```
-docker build -f AirplaneProject/Dockerfile .
+docker build -t airplaneproject:latest -f AirplaneProject/Dockerfile .
 docker compose up
 ```
 2) Потом в параллельном окне (для инициализации/обновления БД):
 
 ```
+dotnet tool install --global dotnet-ef (достаточно выполнить 1 раз при 1м запуске)
 cd AirplaneProject
 dotnet ef database update
 ```
