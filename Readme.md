@@ -5,7 +5,7 @@
 0) Должен быть установлен докер
 1) В powershell из корневой папки проекта выполнить:
 ```
-docker build -t airplaneproject:latest -f AirplaneProject/Dockerfile .
+docker build -t ghcr.io/unknowingbulb/airplaneproject:latest -f AirplaneProject/Dockerfile . (или docker image pull ghcr.io/unknowingbulb/airplaneproject:latest)
 docker compose up
 ```
 2) Потом в параллельном окне (для инициализации/обновления БД):
