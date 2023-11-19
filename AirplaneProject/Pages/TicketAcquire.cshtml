@@ -1,0 +1,78 @@
+﻿@page
+@model AirplaneProject.WebUI.Pages.TicketAcquireModel
+
+<h3>Купить билет</h3>
+
+@if (Model.Error == TicketAcquireErrors.FlightInfoError)
+{
+    <div class="error-text">@Model.Error</div>
+}
+else
+{
+    <div>
+        <h4>Рейс:</h4>
+        <div>@Model.Flight.DepartureLocation - @Model.Flight.DestinationLocation</div>
+        <div>Отправление в @Model.Flight.DepartureDateTime (UTC)</div>
+        <div>Цена одного билета: @Model.Flight.Price</div>
+    </div>
+    <div>
+        @if (Model.Error == TicketAcquireErrors.NoSeatsError)
+        {
+            <div class="error-text">@Model.Error</div>
+        }
+        else
+        {
+            <form method="post" asp-page-handler="ChangePassenger" asp-route-flightId="@Model.Flight.Id">
+                @for (var psgrsIndex = 0; psgrsIndex < Model.UserPassengers.Count; psgrsIndex++)
+                {
+                    <input type="hidden" asp-for="UserPassengers[psgrsIndex].Id" />
+                    <input type="hidden" asp-for="UserPassengers[psgrsIndex].Name" />
+                    <input type="hidden" asp-for="UserPassengers[psgrsIndex].IsSavedInDb" />
+                    <input type="hidden" asp-for="UserPassengers[psgrsIndex].PassportData" />
+                }
+                @for (var srIndex = 0; srIndex < Model.SeatReserves.Count; srIndex++)
+                {
+                    <h6>Билет №@(srIndex + 1)</h6>
+                    <input type="hidden" asp-for="SeatReserves[srIndex].Passenger.Id" />
+                    <input type="hidden" asp-for="SeatReserves[srIndex].Id" />
+                    <div class="row-columns">
+                        <div class="column-names login-text">Место в самолете</div>
+                        <select class="column-inputs login-input" asp-for="SeatReserves[srIndex].SeatNumber"
+                                asp-items=@(new SelectList(Model.EmptySeatNumbers, Model.SeatReserves[srIndex].SeatNumber))></select>
+                    </div>
+                    <div>
+                        <div class="column-names login-text">Выбрать сохраненного пассажира</div>
+                        <select onchange="this.form.submit()" class="column-inputs login-input" asp-for="SeatReserves[srIndex].PassengerId"
+                                asp-items=@(new SelectList(Model.UserPassengers
+                                .Select(p => new {Id = p.Id, Name = (p.Id == Guid.Empty) ? "Добавить нового" : $"{p.Name} - {p.PassportData}"}),
+                                "Id", "Name", Model.SeatReserves[srIndex].PassengerId))></select>
+                    </div>
+                    @if (Model.SeatReserves[srIndex].PassengerId == Guid.Empty)
+                    {
+                        <div class="column-names login-text">Добавить нового пассажира</div>
+                        <div class="row-columns">
+                            <div class="column-names login-text">ФИО пассажира</div>
+                            <input class="column-inputs login-input" asp-for="SeatReserves[srIndex].Passenger.Name" />
+                        </div>
+                        <div class="row-columns">
+                            <div class="column-names login-text">Серия и номер паспорта</div>
+                            <input class="column-inputs login-input" asp-for="SeatReserves[srIndex].Passenger.PassportData" />
+                        </div>
+                    }
+                }
+                <button type="submit" asp-page-handler="AddTicket" asp-route-flightId="@Model.Flight.Id">Добавить билет</button>
+                @if (Model.SeatReserves.Count > 0)
+                {
+                    <h5>
+                        Общая стоимость: @(Model.Flight.Price * Model.SeatReserves.Count)
+                    </h5>
+                    @if (Model.Error != string.Empty)
+                    {
+                        <div class="error-text">@Model.Error</div>
+                    }
+                    <button type="submit" asp-page-handler="CompleteOrder" asp-route-flightId="@Model.Flight.Id">Оформить заказ</button>
+                }
+            </form>
+        }
+    </div>
+}

@@ -1,0 +1,62 @@
+﻿@page
+@model AirplaneProject.WebUI.Pages.OrderAdministrationModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<form method="post">
+    <div>
+        <h4>Заказы:</h4>
+        <div>
+            <h5>Применить фильры</h5>
+            <div class="row-columns">
+                <div class="column-names">по ФИО</div>
+                <input class="column-inputs" asp-for="SearchClientName" />
+                <button type="submit" asp-page-handler="ApplyNameFilter">Применить фильтр</button>
+            </div>
+
+            <div class="row-columns">
+                <div class="column-names">по номеру телефона:</div>
+                <input class="column-inputs" asp-for="SearchClientPhoneNumber" />
+                <button type="submit" asp-page-handler="ApplyPhoneFilter">Применить фильтр</button>
+            </div>
+            <button type="submit" asp-page-handler="ResetFilters">Сбросить фильтры</button>
+            <span align="left" class="error-text">@Html.ValidationMessage("FilterError")</span>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Время отправления (UTC)</th>
+                    <th>Город отправления</th>
+                    <th>Направляется в</th>
+                    <th>ФИО клиента</th>
+                    <th>Номер телефона</th>
+                    <th>Цена заказа</th>
+                    <th>Статус заказа</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td>@order.Flight.DepartureDateTime</td>
+                        <td>@order.Flight.DepartureLocation</td>
+                        <td>@order.Flight.DestinationLocation</td>
+                        <td>@order.User.Name</td>
+                        <td>@order.User.PhoneNumber</td>
+                        <td>@order.Price</td>
+                        @if (order.IsActive)
+                        {
+                            <td>Активен</td>
+                            <td>
+                                <button type="submit" asp-page-handler="Cancel" asp-route-orderId="@order.Id">Отменить заказ</button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>Отменен</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>

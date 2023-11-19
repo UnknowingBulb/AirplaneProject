@@ -4,8 +4,11 @@ using AirplaneProject.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AirplaneProject.Application.Interactors;
 using AirplaneProject.Infrastructure.Database.RedisCache;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.EntityFrameworkCore;
+using AirplaneProject.Database.DbData;
+using AirplaneProject.Application.Interfaces.DbData;
+using AirplaneProject.Application.Interfaces;
+using Infrastructure.Authorization;
 
 internal class Program
 {
@@ -19,10 +22,9 @@ internal class Program
         var builder = WebApplication.CreateBuilder(opts);
 
         // Add services to the container.
-        builder.Services.AddRazorPages()
-            .AddRazorPagesOptions(opt => opt.RootDirectory = "/WebUI/Pages");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection")));
+        builder.Services.AddRazorPages();
+        builder.Services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection"), db=>db.MigrationsAssembly("Migrations")));
         builder.Services.AddStackExchangeRedisCache(options => {
             options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
         });
@@ -31,6 +33,13 @@ internal class Program
         builder.Services.AddScoped<FlightInteractor>();
         builder.Services.AddScoped<OrderInteractor>();
         builder.Services.AddScoped<PassengerInteractor>();
+        builder.Services.AddScoped<SpawnDataInteractor>();
+        builder.Services.AddScoped<IFlightDb, FlightDb>();
+        builder.Services.AddScoped<IOrderDb, OrderDb>();
+        builder.Services.AddScoped<IPassengerDb, PassengerDb>();
+        builder.Services.AddScoped<ISpawnDataDb, SpawnDataDb>();
+        builder.Services.AddScoped<IUserDb, UserDb>();
+        builder.Services.AddScoped<IUserSecurity, UserSecurity>();
 
         builder.Services.AddAuthorization();
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

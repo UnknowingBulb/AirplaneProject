@@ -1,0 +1,30 @@
+﻿@page
+@model AirplaneProject.WebUI.Pages.CreateModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h3>Заполните данные:</h3>
+
+<form method="post" asp-page-handler="Registration">
+
+    <div class="row-columns">
+        <div class="column-names">Логин:</div>
+        <input class="column-inputs" asp-for="CreatedUser!.Login" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Пароль:</div>
+        <input class="column-inputs" asp-for="CreatedUser!.Password" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Фамилия Имя Отчество:</div>
+        <input class="column-inputs" asp-for="CreatedUser!.Name" />
+    </div>
+
+    <div class="row-columns">
+        <div class="column-names">Номер телефона:</div>
+        <input class="column-inputs" asp-for="CreatedUser!.PhoneNumber" />
+    </div>
+    <input type="submit" value="Подтвердить" />
+</form>
+<span align="left" class="error-text">@Html.ValidationMessage("RegistrationError")</span>

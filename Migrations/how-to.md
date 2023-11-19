@@ -1,0 +1,1 @@
+dotnet ef migrations add InitMigration --project Migrations --startup-project AirplaneProject
