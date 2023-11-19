@@ -24,7 +24,7 @@ services:
       - host
     
   project:
-    image: airplaneproject:latest
+    image: ghcr.io/unknowingbulb/airplaneproject:latest
     ports:
       - 85:80
       - 4452:443
