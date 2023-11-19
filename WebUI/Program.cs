@@ -14,12 +14,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var opts = new WebApplicationOptions()
-        {
-            Args = args,
-            WebRootPath = "WebUI/wwwroot"
-        };
-        var builder = WebApplication.CreateBuilder(opts);
+        var builder = WebApplication.CreateBuilder();
 
         // Add services to the container.
         builder.Services.AddRazorPages();
